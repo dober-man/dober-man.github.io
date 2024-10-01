@@ -3,8 +3,6 @@ layout: default
 title: Configuring Auto Cert in XC
 ---
 
-# Configuring auto cert in XC
-
 Subdomain Delegation Example - uses GoDaddy
 1. Add subdomain to be delegated as a primary domain in XC DNS.
 * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
