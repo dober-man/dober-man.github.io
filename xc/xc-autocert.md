@@ -12,10 +12,7 @@ Subdomain Delegation Example - uses GoDaddy
 
 2. Add NS servers with a delegation to **mytest** to customer managed DNS Servers (In this example the DNS provider is GoDaddy.
 
-![Image Description](./images/ns.png)
-
-
-<img width="550" alt="image" src="https://github.com/user-attachments/assets/b6a6aa3b-1798-410a-88eb-e674abb57f9b">
+![GoDaddy DNS config](./images/ns.png)
 
 3. Create LB object with auto-cert enabled. EX: site1.mytest.myfselab.us
 
