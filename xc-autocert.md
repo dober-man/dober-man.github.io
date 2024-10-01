@@ -1,3 +1,8 @@
+---
+layout: default
+title: Configuring Auto Cert in XC
+---
+
 # Configuring auto cert in XC
 
 Subdomain Delegation Example - uses GoDaddy
