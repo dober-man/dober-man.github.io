@@ -7,12 +7,14 @@ title: Configuring DNS for XC Load Balancer
 
 There are 3 options for getting clients resolved appropriately to the XC Cloud Load Balancer.
 
-1. "A" record Delegation
+1. "A" record Modification
 2. CNAME Delegation
 3. Subdomain Delegation
 
-## "A" Record Delegation Example
-While not a true delegation so to speak, the "A" record delegation is quick and straightforward to configure. 
+In all three examples below, Godaddy is playing the role of both Name Registrar and Primary DNS. 
+
+## "A" Record Modification Example
+The "A" record delegation is quick and straightforward to configure. Similar to setting a host file on your local system. 
 
 **Note:** Auto Certificate management not supported in this configuration. BYOC.  
 
@@ -32,7 +34,7 @@ While not a true delegation so to speak, the "A" record delegation is quick and 
 
 ########################################################################
 
-## CNAME Delegation Example - uses GoDaddy
+## CNAME Delegation Example 
 
 ### Overview
 
@@ -48,7 +50,7 @@ While not a true delegation so to speak, the "A" record delegation is quick and 
 
 
 
-## Subdomain Delegation Example - uses GoDaddy
+## Subdomain Delegation Example 
 
   * Add subdomain to be delegated as a primary domain in XC DNS.
     * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
