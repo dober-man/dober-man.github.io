@@ -5,11 +5,16 @@ title: Configuring DNS for XC Load Balancer
 
 # Configuring DNS Delegation to XC. 
 
+There are 3 options for getting clients resolved appropriately to the XC Cloud Load Balancer.
+
+1. "A" record Delegation
+2. CNAME Delegation
+3. Subdomain Delegation
 
 ## "A" record delegation 
 While not a true delegation so to speak, the "A" record delegation is quick and straightforward to configure. 
 
-..NOTE:: Auto Certificate management not supported in this configuration. BYOC.  
+> **Note:** Auto Certificate management not supported in this configuration. BYOC.  
 
 1. Create an XC-LB
 2. Retrieve XC public IP
