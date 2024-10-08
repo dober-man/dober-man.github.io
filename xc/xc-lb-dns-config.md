@@ -11,19 +11,34 @@ There are 3 options for getting clients resolved appropriately to the XC Cloud L
 2. CNAME Delegation
 3. Subdomain Delegation
 
-## "A" record delegation 
+## "A" Record Delegation Example
 While not a true delegation so to speak, the "A" record delegation is quick and straightforward to configure. 
 
-> **Note:** Auto Certificate management not supported in this configuration. BYOC.  
+**Note:** Auto Certificate management not supported in this configuration. BYOC.  
 
-1. Create an XC-LB
-2. Retrieve XC public IP
-3. Modify existing sites "A" record to point to XC IP. 
+### Overview
 
+* Godaddy DNS is authoritative for myfselab.com. 
+* A record exists in Godaddy DNS for site1.myfselab.com 
 
+    ![site1.myfselab.com DNS](../images/site1.png)
 
+1. Create an XC-LB. Example domain is: **"site1.myfselab.com"**
+2. Retrieve XC public IP from LB JSON (get_spec->DNS Info->IP Address)
+3. Modify "A" record in GoDaddy to point to XC IP. 
+4. Verify
+
+    ![site1 New "A" Record](../images/site1a.png)
+
+########################################################################
 
 ## CNAME Delegation Example - uses GoDaddy
+
+### Overview
+
+* Godaddy DNS is authoritative for myfselab.com. 
+* A record exists in Godaddy DNS for site1.myfselab.com 
+
 1. Create an XC-LB
 2. Retrieve XC LB CNAME
 3. Modify existing sites "A" record to become a CNAME that resolves the site to an XC CNAME and IP. 
