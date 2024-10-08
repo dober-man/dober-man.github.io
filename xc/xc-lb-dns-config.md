@@ -14,7 +14,7 @@ There are 3 options for getting clients resolved appropriately to the XC Cloud L
 In all three examples below, Godaddy is playing the role of both Name Registrar and Primary DNS. 
 
 ## "A" Record Modification Example
-The "A" record delegation is quick and straightforward to configure. Similar to setting a host file on your local system. 
+"A" record modification is quick and straightforward to configure. Similar to setting a host file on your local system. 
 
 **Note:** Auto Certificate management not supported in this configuration. BYOC.  
 
@@ -27,7 +27,7 @@ The "A" record delegation is quick and straightforward to configure. Similar to 
 
 1. Create an XC-LB. Example domain is: **"site1.myfselab.com"**
 2. Retrieve XC public IP from LB JSON (get_spec->DNS Info->IP Address)
-3. Modify "A" record in GoDaddy to point to XC IP. 
+3. Modify "A" record in GoDaddy to point to XC IP
 4. Verify
 
     ![site1 New "A" Record](../images/site1a.png)
@@ -43,10 +43,20 @@ The "A" record delegation is quick and straightforward to configure. Similar to 
 
 1. Create an XC-LB
 2. Retrieve XC LB CNAME
-3. Modify existing sites "A" record to become a CNAME that resolves the site to an XC CNAME and IP. 
 
+    ![site1 - Retrieve XC CNAME](../images/site1-cname.png)
 
+3. Copy the CNAME
 
+    ![site1 - CNAME](../images/cname.png)
+
+4. In Godaddy, delete the existing "A" record for **site1.rexample.com** and create a CNAME record pointing site1 to the XC CNAME. 
+
+    ![Godaddy CNAME](../images/gd-cname.png)
+
+5. Verify
+
+    ![Verify CNAME](../images/cname-verify.png)
 
 
 
