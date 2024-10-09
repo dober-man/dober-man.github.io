@@ -81,7 +81,7 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 
     ![Auto DNS for LB](../images/lbr.png)
 
-2. In Godaddy, add F5 Cloud DNS Server NS records with a delegation to **site1**.
+2. In GoDaddy, add F5 Cloud DNS Server NS records with a delegation to **site1**.
 
     ![GoDaddy DNS config](../images/f5ns.png)
 
