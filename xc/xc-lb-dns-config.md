@@ -7,9 +7,9 @@ title: Configuring DNS for XC Load Balancer
 
 There are 3 options for getting clients resolved appropriately to the XC Cloud Load Balancer.
 
-1. "A" record Modification
-2. CNAME Delegation
-3. Subdomain Delegation
+1. "A" record Modification (BYOC - bring your own cert)
+2. CNAME Delegation (BYOC)
+3. Subdomain Delegation (Auto Certificate supported)
 
 In all three examples below, Godaddy is playing the role of both Name Registrar and Primary DNS. 
 
@@ -89,4 +89,10 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 
     ![HTTP LB config](../images/lb.png)
 
+4. Verify - The cert generation process can take a few minutes. You will see it in a pending state. Click on the "i" for more info. 
 
+    ![Pending Challenge](../images/pending.png)
+
+5. Success
+
+    ![Success](../images/success.png)
