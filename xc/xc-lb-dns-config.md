@@ -43,6 +43,8 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 * Godaddy DNS is authoritative for myfselab.com. 
 * An "A" record exists in Godaddy DNS for site1.myfselab.com 
 
+**Note:** Auto Certificate management not supported in this configuration. BYOC.  
+
 1. Create an XC-LB
 2. Retrieve XC LB CNAME
 
@@ -68,6 +70,8 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 
 * Godaddy DNS is authoritative for myfselab.com.
 * No records exist in Godaddy DNS for site1.myfselab.com
+
+**Note:** Auto Certificate supported in this configuration. 
 
 1.  Add subdomain to be delegated **site1.myfselab.com** as a primary domain in XC DNS.
     * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
