@@ -75,7 +75,7 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 
 1.  Add subdomain to be delegated **site1.myfselab.com** as a primary domain in XC DNS.
 
-  ![New ZOne](../images/zone.png)
+  ![New Zone](../images/zone.png)
 
 * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
 
