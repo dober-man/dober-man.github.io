@@ -3,17 +3,34 @@ layout: default
 title: Configuring Auto Cert in XC
 ---
 
-# Configuring auto cert in XC
+## Overview
 
-Subdomain Delegation Example - uses GoDaddy
-1. Add subdomain to be delegated as a primary domain in XC DNS.
+* Godaddy DNS is authoritative for myfselab.com.
+* No records exist in Godaddy DNS for site1.myfselab.com
+
+**Note:** Auto Certificate supported in this configuration. 
+
+1.  Add subdomain to be delegated **site1.myfselab.com** as a primary domain in XC DNS.
+
+  ![New Zone](../images/zone.png)
+
 * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
-* In this example the test subdomain to be delegated is: **mytest**.myfselab.us
 
-2. Add NS servers with a delegation to **mytest** to customer managed DNS Servers (In this example the DNS provider is GoDaddy.
+    ![Auto DNS for LB](../images/lbr.png)
 
-    ![GoDaddy DNS config](../images/ns.png)
+2. In GoDaddy, add F5 Cloud DNS Server NS records with a delegation to **site1**.
+
+    ![GoDaddy DNS config](../images/f5ns.png)
 
 3. Create LB object with auto-cert enabled. EX: site1.mytest.myfselab.us
 
+    ![HTTP LB config](../images/lb.png)
+
+4. Verify - The cert generation process can take a few minutes. You will see it in a pending state. Click on the "i" for more info. 
+
+    ![Pending Challenge](../images/pending.png)
+
+5. Success
+
+    ![Success](../images/success.png)
 
