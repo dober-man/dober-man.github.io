@@ -74,14 +74,19 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 **Note:** Auto Certificate supported in this configuration. 
 
 1.  Add subdomain to be delegated **site1.myfselab.com** as a primary domain in XC DNS.
-    * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
 
-2. Add NS servers with a delegation to **site1** to GoDaddy DNS Servers 
+  ![New ZOne](../images/zone.png)
 
-    ![GoDaddy DNS config](../images/ns.png)
+* Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
+
+    ![Auto DNS for LB](../images/lbr.png)
+
+2. In Godaddy, add F5 Cloud DNS Server NS records with a delegation to **site1**.
+
+    ![GoDaddy DNS config](../images/f5ns.png)
 
 3. Create LB object with auto-cert enabled. EX: site1.mytest.myfselab.us
 
-
+    ![HTTP LB config](../images/lb.png)
 
 
