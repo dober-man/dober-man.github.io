@@ -23,7 +23,7 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 ### Overview
 
 * Godaddy DNS is authoritative for myfselab.com. 
-* An "A" record exists in Godaddy DNS for site1.myfselab.com 
+* An "A" record exists in Godaddy DNS for site1.myfselab.com. 
 
     ![site1.myfselab.com DNS](/xc-images/site1.png)
 
