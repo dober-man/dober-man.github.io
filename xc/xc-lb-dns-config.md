@@ -32,7 +32,7 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 3. Modify "A" record in GoDaddy to point to XC IP 
 4. Verify
 
-    ![site1 New "A" Record](../images/site1a.png)
+    ![site1 New "A" Record](/xc-images/site1a.png)
 
 ####################################################################################################
 
@@ -48,19 +48,19 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 1. Create an XC-LB
 2. Retrieve XC LB CNAME
 
-    ![site1 - Retrieve XC CNAME](../images/site1-cname.png)
+    ![site1 - Retrieve XC CNAME](/xc-images/site1-cname.png)
 
 3. Copy the CNAME
 
-    ![site1 - CNAME](../images/cname.png)
+    ![site1 - CNAME](/xc-images/cname.png)
 
 4. In Godaddy, delete the existing "A" record for **site1.example.com** and create a CNAME record pointing site1 to the XC CNAME. 
 
-    ![Godaddy CNAME](../images/gd-cname.png)
+    ![Godaddy CNAME](/xc-images/gd-cname.png)
 
 5. Verify
 
-    ![Verify CNAME](../images/cname-verify.png)
+    ![Verify CNAME](/xc-images/cname-verify.png)
 
 ####################################################################################################
 
@@ -75,24 +75,24 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 
 1.  Add subdomain to be delegated **site1.myfselab.com** as a primary domain in XC DNS.
 
-  ![New Zone](../images/zone.png)
+  ![New Zone](/xc-images/zone.png)
 
 * Make sure to check the box for: "Allow Application Load Balancer Managed Records" under the Primary DNS Configuration options.
 
-    ![Auto DNS for LB](../images/lbr.png)
+    ![Auto DNS for LB](/xc-images/lbr.png)
 
 2. In GoDaddy, add F5 Cloud DNS Server NS records with a delegation to **site1**.
 
-    ![GoDaddy DNS config](../images/f5ns.png)
+    ![GoDaddy DNS config](/xc-images/f5ns.png)
 
 3. Create LB object with auto-cert enabled. EX: site1.mytest.myfselab.us
 
-    ![HTTP LB config](../images/lb.png)
+    ![HTTP LB config](/xc-images/lb.png)
 
 4. Verify - The cert generation process can take a few minutes. You will see it in a pending state. Click on the "i" for more info. 
 
-    ![Pending Challenge](../images/pending.png)
+    ![Pending Challenge](/xc-images/pending.png)
 
 5. Success
 
-    ![Success](../images/success.png)
+    ![Success](/xc-images/success.png)
