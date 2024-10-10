@@ -25,7 +25,7 @@ In all three examples below, Godaddy is playing the role of both Name Registrar 
 * Godaddy DNS is authoritative for myfselab.com. 
 * An "A" record exists in Godaddy DNS for site1.myfselab.com 
 
-    ![site1.myfselab.com DNS](../images/site1.png)
+    ![site1.myfselab.com DNS](/xc-images/site1.png)
 
 1. Create an XC-LB. Example domain is: **"site1.myfselab.com"**
 2. Retrieve XC public IP from LB JSON (get_spec->DNS Info->IP Address)
