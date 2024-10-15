@@ -5,6 +5,10 @@ title: Configuring Service Policies for Geolocation and IP
 
 ## Overview
 
+Service Policies are an incredibly powerful matching mechinism for both client and server side traffic. They can operate at layer 3-7 and are designed from the point of view of the proxy. Service policy can be designed for a single proxy or a set of proxies or all proxies matching a given label expression.
+
+## Goal
+
 * Allow only defined Geolocations and IP's to Load Balancer
 * Disallow all others 
 
