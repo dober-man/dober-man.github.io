@@ -25,8 +25,8 @@ title: Configuring Service Policies for Geolocation and IP
 4. Under "IPv4 Prefix List" click the blue **Configure**. 
     * Add your various allowed source IP's and Networks here and click "Apply". 
 
-
 5. Scroll down to **Country List** and start typing "United States". Choose **"United States"**.
+
 
     ![Policy Rule](/xc-images/rule.png)
 
@@ -38,6 +38,7 @@ title: Configuring Service Policies for Geolocation and IP
 
 7. By default you should now see the following policies
 
+
    ![Default Service Policies](/xc-images/sp.png)
 
 
@@ -46,6 +47,7 @@ title: Configuring Service Policies for Geolocation and IP
 **Multi-Cloud App Connect > Manage > Load Balancers**
 
 7.  Under "Actions" choose "Manage Configuration" > "Edit Configuration" and scroll down to the **"Common Security Controls"** section. Click "Edit" and choose your new service policy. 
+
 
    ![Security Controls](/xc-images/sec-con.png)
 
