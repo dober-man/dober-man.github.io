@@ -42,17 +42,17 @@ title: Configuring Service Policies for Geolocation and IP
    ![Default Service Policies](/xc-images/sp.png)
 
 
-6. Navigate to the Load Balancer that you want to apply the service policy to.
+8. Navigate to the Load Balancer that you want to apply the service policy to.
 
    **Multi-Cloud App Connect > Manage > Load Balancers**
 
-7.  Under "Actions" choose "Manage Configuration" > "Edit Configuration" and scroll down to the **"Common Security Controls"** section. Click "Edit" and choose your new service policy. 
+9.  Under "Actions" choose "Manage Configuration" > "Edit Configuration" and scroll down to the **"Common Security Controls"** section. Click "Edit" and choose your new service policy. 
 
 
    ![Security Controls](/xc-images/sec-con.png)
 
 
-8. Click **"Save and Exit"**. 
+10. Click **"Save and Exit"**. 
 
 ### Testing the Allowed Source IPs and Networks
 
