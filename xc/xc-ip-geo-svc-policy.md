@@ -48,9 +48,7 @@ title: Configuring Service Policies for Geolocation and IP
 
 9.  Under "Actions" choose "Manage Configuration" > "Edit Configuration" and scroll down to the **"Common Security Controls"** section. Click "Edit" and choose your new service policy. 
 
-
    ![Security Controls](/xc-images/sec-con.png)
-
 
 10. Click **"Save and Exit"**. 
 
