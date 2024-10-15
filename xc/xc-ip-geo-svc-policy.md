@@ -56,9 +56,9 @@ title: Configuring Service Policies for Geolocation and IP
 
 1. Make sure the site works from the IP addresses defined in the Service Policy. The way this service policy is written, it includes **Any** USA IP address plus an additional network and source IP that we added for an example. 
 
-    > **Note:** In practice, if the IP and subnet ranges we defined in the rule were actually from the USA, we would not need to define them additionally, and just the USA based service policy would sufficient. This example presumes the defined source ip and network are outside of the USA. 
+    > **Note:** In practice, if the IP and subnet ranges defined in the rule were actually from the USA, they would match the allow and not need additional definition. They are only provided as example.  
 
-2. Test from a client that is outside the US. I used a VPN to do this and connected from a London IP. 
+2. Test from a client that is outside the US. I used a VPN to do this and connected from a London IP. The service policy default deny was triggered. 
 
    ![Request Log](/xc-images/rl.png)
 
