@@ -83,9 +83,7 @@ By default when a new LB is created the setting for "Service Policies" is **"App
    ![Ending](/xc-images/ending.png)
 
 Edit service policy and change default ending to Deny. 
-
-> **Note:** Changing the ending to default deny is only necessary when applying Namespace Service Policies. When applying a "custom" Service policy directly to a load blanancer there is an inherent default deny. 
-
+    > **Note:** Changing the ending to default deny is only necessary when applying Namespace Service Policies. When applying a "custom" Service policy directly to a load blanancer there is an inherent default deny. 
 3. Ensure all load balancers are configured to  **Apply Namespace Service Policies"**.
 
 
