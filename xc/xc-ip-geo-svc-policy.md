@@ -11,6 +11,8 @@ Service Policies are an incredibly powerful matching mechinism for both client a
 
 ## Goal
 
+Demonstrate the configuration of Service Policies at the load balancer and/or namespace level.  
+
 * Allow only defined Geolocations and IP's to Load Balancer
 * Disallow all others 
 
