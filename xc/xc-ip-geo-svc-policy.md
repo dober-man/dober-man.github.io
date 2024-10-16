@@ -68,3 +68,24 @@ Service Policies are an incredibly powerful matching mechinism for both client a
    ![Request Log](/xc-images/rl.png)
 
 
+## Applying the Service Policy to all LB's in the Namespace
+
+By default when a new LB is created the setting for "Service Policies" is **Apply Namespace Service Policies"**. This makes setting a Namespace Service Policy straightforward. 
+
+   ![Default SP](/xc-images/default-sp.png)
+
+1. Navigate to Service Policies > **Active Service Policies** and click **"Select Active Service Policies"** add the desired service policy. 
+
+   ![Active SP](/xc-images/active-sp.png)
+
+2. When Applying Service Policy to the Namespace, make sure to change the **Default Action** to **Deny**.  
+
+   ![Ending](/xc-images/ending.png)
+
+Edit service policy and change default ending to Deny. 
+
+
+3. Ensure all load balancers are configured to  **Apply Namespace Service Policies"**.
+
+
+
