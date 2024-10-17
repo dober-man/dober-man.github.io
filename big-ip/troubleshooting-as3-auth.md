@@ -1,12 +1,11 @@
 ---
 layout: default
-title: Troubeshooting AS3 Auth
+title: Troubleshooting AS3 Auth
 ---
-
 
 ### Troubleshooting OpenShift and BIG-IP AS3 Authentication Failure
 
-The error you're encountering suggests that the service account configured for your OpenShift deployment is not properly authenticated to access the AS3 endpoint on the BIG-IP system. Here are some troubleshooting steps you can take:
+A 401 Unauthorized error is typically due to an authentication configuration. Follow these steps to verify AS3 credentials are valid. 
 
 #### 1. Check Service Account Permissions
 Ensure the service account you set up has the necessary permissions on the BIG-IP to access AS3. Specifically, check that the user associated with the service account has the `admin` role or any role with access to `/mgmt/shared/appsvcs/info`.
