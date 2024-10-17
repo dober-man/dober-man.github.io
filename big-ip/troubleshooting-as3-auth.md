@@ -35,3 +35,23 @@ Investigate the BIG-IP system logs for more detailed information on the 401 erro
 
     /var/log/restjavad.0.log
     /var/log/restnoded/restnoded.log
+
+#### 7. Check BIG-IP Rest API Setup:
+
+Make sure that the AS3 is correctly installed and functioning on the BIG-IP device. You can verify this by accessing:
+
+https://<BIGIP_IP>/mgmt/shared/appsvcs/info
+
+This endpoint should return AS3-related information if AS3 is working properly.
+
+#### 8. BIG-IP AS3 Version Compatibility:
+
+Ensure that AS3 version 3.53.0 is compatible with the version of F5 BIG-IP you’re using. Sometimes, incompatibilities between AS3 versions and the BIG-IP version can cause authentication failures.
+
+#### 9. Check for Possible IP Restrictions:
+
+Verify if there are any IP restrictions or firewall rules between OpenShift and the BIG-IP devices that might be blocking or interfering with communication.
+
+#### 10. CIS Configuration:
+
+Ensure the Helm chart and F5 Container Ingress Services (CIS) configurations (like the bigip-username and bigip-password) are correctly set in your deployment. Incorrect configurations here could lead to failed authentication.
