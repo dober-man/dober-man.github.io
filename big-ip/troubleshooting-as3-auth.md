@@ -17,7 +17,7 @@ Confirm that the credentials (username and password) used by the service account
 Test the connectivity to the AS3 API manually using `curl` or Postman. For example, you can run:
 
 ```bash
-curl -k -u <username>:<password> https://<BIGIP_IP>/mgmt/shared/appsvcs/info
+curl -k -u <username>:<password> https://[BIGIP_IP]/mgmt/shared/appsvcs/info
 ```
 
 This will help verify whether the credentials are correct and whether the AS3 API is reachable.
@@ -40,7 +40,7 @@ Investigate the BIG-IP system logs for more detailed information on the 401 erro
 
 Make sure that the AS3 is correctly installed and functioning on the BIG-IP device. You can verify this by accessing:
 
-https://<BIGIP_IP>/mgmt/shared/appsvcs/info
+https://[BIGIP_IP]/mgmt/shared/appsvcs/info
 
 This endpoint should return AS3-related information if AS3 is working properly.
 
