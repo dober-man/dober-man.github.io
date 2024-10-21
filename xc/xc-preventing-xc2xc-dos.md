@@ -17,18 +17,13 @@ For instance:
 
 This setup is generally considered a minimum best-practice because only traffic sourced from XC is allowed but in reality, this may not be enough from a security perspective. 
 
-[Diagram]
+   ![XC-RE-Client](/xc-images/xc-re-client.png)
+
 
 **Problem**
 Another account/tenant(y) within XC could create a load balancer and point to the public IP or DNS name of the origin pools for tenant(x). The attacker must know or learn the actual origin servers IP, or network segment to perform this attack. 
 
 In addition, what if the origin pool in tenant(x) is pointing to a DNS name that resolves to public IP's? This is common with SaaS API gateways such as AWS and Azure to name a few and these gateways all use the same DNS name for the gateway respective to their cloud. Same DNS = Same IP's = Easy to learn or guess Origin IP's. For instance a common flow where a customer is using XC for WAF/WAAP and a 3rd party SAAS solution for an APIGW, may be Client-->XC(WAAP)-->APIGW(pub-ip)-->API as shown in the diagram below. 
-
-
-
-   ![XC-RE-Client](/xc-images/xc-re-client.png)
-
-
 
 In this default configuration, an attacker could learn the customers public NAT IP and add it to their Origin Pool. They can now instantiate attacks from their tenant(y) which will be sourced from the XC IP's and allowed by the customer(x) perimeter firewall. 
 
