@@ -34,16 +34,16 @@ In this default configuration, an attacker could learn the customers public NAT 
  
 There are at least 4 ways to mitigate this risk. 
 
- 1. **L7 Header** - If the origin servers (on-prem or SAAS) have something in front of them that is "L7 aware" or they themselves can be configured to do header valiudation, a custom HTTP request header could be injected into the flow by the load balancer in "tenant x". Tenant y would not know or be able to see this header. Of course traffic not containing this header would still make it all the way the L7 aware service before being dropped. While this would suffice for a L7 DoS or or other L7 type attack, it would not help with a L3/4 type attack which would still make it's way through the infrastructure.  
+ 1. **L7 Header** - If the origin servers (on-prem or SAAS) have something in front of them that is "L7 aware" or they themselves can be configured to do header valiudation, a custom HTTP request header could be injected into the flow by the load balancer in "tenant x". Tenant y would not know or be able to see this header. Of course traffic not containing this header would still make it all the way to the L7 aware service before being dropped. While this would suffice for a L7 DoS or or other L7 type attack, it would not help with a L3/4 type attack which could still make it's way through the infrastructure.  
  
    ![Custom Header](/xc-images/header.png)
  
 
-2. **MTLS** - A unique differentiator for F5 XC is our ability to use server-side MTLS. If customer has the capability on the Web Server/Service or something in front of it similar to the previous L7 header example, then we can add an additional layer of source validation by using mutual certificate authentication. Even a self-signed cert would add a lot of value here. No cert = no layer 7 access to the app or service. This does not prevent L3/4 DDoS attacks but will prevent unwanted application access. 
+2. **MTLS** - A unique differentiator for F5 XC is our ability to use server-side MTLS. If customer has the capability on the Web Server/Service or something in front of it similar to the previous L7 header example, then we can add an additional layer of source validation by using mutual certificate authentication. Even a self-signed cert would add a lot of value here. No cert = no layer 7 access to the app or service. This does not prevent an L3/4 attack but will prevent unwanted application access. 
 
    ![mtls](/xc-images/mtls.png)
 
-3. **Customer Edge** (CE) proxies are deployable software that creates a private mesh back to our Application Delivery Network (ADN). These come with additional cost and need to be deployed at each location, thus creating a private mesh or overlay network that is unavailable outside of the tenant. in this scenario, the attacker traffic could potentially make it to the public IP of (or in front of) the CE and be dropped, thus protecting the application itself but still potentially allowing L3/4 DDoS. 
+3. **Customer Edge** (CE) proxies are deployable software that creates a private mesh back to our Application Delivery Network (ADN). These come with additional cost and need to be deployed at each location, thus creating a private mesh or overlay network that is unavailable outside of the tenant. in this scenario, the attacker traffic could potentially make it to the public IP of (or in front of) the CE and be dropped, thus protecting the application itself but still potentially allowing bad L3/4. 
 
 
    ![ce](/xc-images/ce.png)
@@ -57,7 +57,7 @@ The perimeter firewall rules can be simplified to allow traffic only from Privat
    ![Private Link](/xc-images/private-l.png)
 
   
-> **A word on L3/4 DDoS:** L3/4 DDoS was brought up several times above when talking about the technicalities of each mitigation method. One very important concept to keep in mind is the fact that XC natively provides L3/4 DDoS mitigation at our Regional Edges. Even in the examples above where "attack" traffic could make it all the way to the app or at least to the perimeter, if it was a true DDoS, this would get picked up by our Regional Edges and automatically mitigated. 
+> **A word on L3/4 DDoS:** L3/4 attacks were brought up several times above when talking about the technicalities of each mitigation method. While a L3/4 attack is not always distributed by nature, most are. One very important concept to keep in mind is the fact that XC natively provides L3/4 DDoS mitigation at our Regional Edges. Even in the examples above where "attack" traffic could make it all the way to the app or at least to the perimeter, if it was a true DDoS, this would get picked up by our Regional Edges and automatically mitigated. 
 
    ![DDoS](/xc-images/ddos.png)
 
