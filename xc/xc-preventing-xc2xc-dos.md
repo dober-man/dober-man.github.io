@@ -20,21 +20,39 @@ This setup is generally considered a minimum best-practice because only traffic 
    ![XC-RE-Client](/xc-images/xc-re-client.png)
 
 
-**Problem**
+**Risk**
 Another account/tenant(y) within XC could create a load balancer and point to the public IP or DNS name of the origin pools for tenant(x). The attacker must know or learn the actual origin servers IP, or network segment to perform this attack. 
 
-In addition, what if the origin pool in tenant(x) is pointing to a DNS name that resolves to public IP's? This is common with SaaS API gateways such as AWS and Azure to name a few and these gateways all use the same DNS name for the gateway respective to their cloud. Same DNS = Same IP's = Easy to learn or guess Origin IP's. For instance a common flow where a customer is using XC for WAF/WAAP and a 3rd party SAAS solution for an APIGW, may be Client-->XC(WAAP)-->APIGW(pub-ip)-->API as shown in the diagram below. 
+In addition, what if the origin pool in tenant(x) is pointing to a DNS name that resolves to public IP's? This is common with SaaS API gateways such as AWS and Azure to name a few and these gateways all use the same DNS name for the gateway respective to their cloud. Same DNS = Same IP's = Easy to learn or guess Origin IP's. For instance a common flow where a customer is using XC for WAF/WAAP and a 3rd party SAAS solution for an APIGW, may be Client-->XC(LB-WAAP)-->APIGW(pub-ip)-->API. 
 
 In this default configuration, an attacker could learn the customers public NAT IP and add it to their Origin Pool. They can now instantiate attacks from their tenant(y) which will be sourced from the XC IP's and allowed by the customer(x) perimeter firewall. 
 
   ![XC-RE-Attack](/xc-images/xc-re-attack.png)
 
-**Solutions**
+**Mitigation**
  
-I've been thinking about giving some recommendations to our WAAP customers:
- 
-    1- Use server-side MTLS: If customer has the capability, we can recommend adding additional layer of source validation, a self-signed cert would add a lot of value here. (note: Until today, only F5 supports this. Other competitors only support client-side MTLS)
-    2- Use private link as much as possible: There are a lot of advantages for using private link. The firewall rules can be simplified to allow traffic only from private links and private links are accessible only from the tenancy.
-    3- Recommending CE option: comes with additional cost, not only for CE nodes but also for traffic.
+There are at least 4 ways to mitigate this risk. 
 
-    If customer origin has L7 aware service, add HTTP request header.  There are additional enhancement requests in for review.  However the 3 ways you outlined are also valid options.  Likely a combination of these 4 would be recommendations.
+ 1. If the origin servers (on-prem or SAAS) have something in front of them that is "L7 aware" or they themselves can be configured to do header valiudation, a custom HTTP request header could be injected into the flow by the load balancer in "tenant x". Tenant y would not know or be able to see this header. Of course traffic not containing this header would still make it all the way the L7 aware service before being dropped. While this would suffice for a L7 DoS or or other L7 type attack, it would not help with a L3/4 type attack which would still make it's way through the infrastructure.  
+ 
+   ![Custom Header](/xc-images/header.png)
+ 
+
+2. A unique differentiator for F5 XC is our ability to use server-side MTLS. If customer has the capability on the Web Server/Service or something in fron of it similar to the previous L7 header example, then we can add an additional layer of source validation by using mutual certificate authentication. Even a self-signed cert would add a lot of value here. 
+
+   ![mtls](/xc-images/mtls.png)
+
+3. Customer Edge (CE) proxies are deployable software that creates a private mesh back to our Application Delivery Network (ADN). These come with additional cost and need to be deployed at each location, thus creating a private mesh or overlay network that is unavailable outside of the tenant. in this scenario, the attacker traffic would make it to the public IP of (or in front of) the CE and be dropped. 
+
+
+   ![ce](/xc-images/ce.png)
+
+
+4. A Private Link is a paid for addon to XC and can be  utilized for connectivity between XC, clients and resources.  This has alot a lot of advantages when dealing with regulatory or other security compliances. 
+The perimeter firewall rules can be simplified to allow traffic only from Private Links and Private Links are accessible only from the tenancy. 
+
+[XC Private Link](https://www.f5.com/pdf/solution-profiles/introducing-f5-distributed-cloud-private-link-solution-overview.pdf)
+
+  
+
+   
