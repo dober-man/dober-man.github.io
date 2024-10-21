@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Preventing XC to XC Malicious Activity
+title: Preventing Cross Tenant Origin Exposure
 ---
 
 ## Overview
 
-F5 Distributed Cloud offers a suite of powerful features designed to simplify the lives of administrators and engineers. A key aspect of this ease of use comes from **shared objects**, such as **Regional Edge Proxies** which utilize well-known public IP addresses. However, while this shared infrastructure enhances scalability and efficiency, it can also present risks if leveraged by attackers. 
+F5 Distributed Cloud offers a suite of powerful features designed to simplify the lives of administrators and engineers. A key aspect of this ease of use comes from **shared objects**, such as **Regional Edge Proxies** which utilize well-known public IP addresses. However, while this shared infrastructure enhances scalability and efficiency, it can also present risks if leveraged by attackers....and in this case cross tenant origin exposure.  
 
 For instance:
 
@@ -15,7 +15,7 @@ For instance:
 
 [XC Proxy IP's](https://docs.cloud.f5.com/docs-v2/platform/reference/network-cloud-ref)
 
-This setup is generally considered a minimum best-practice because only traffic sourced from XC is allowed but in reality, this may not be enough from a security perspective. 
+This setup is generally considered a minimum best practice because it restricts traffic to only those sources originating from XC. However, depending on the organization's risk appetite, this level of security may be insufficient. 
 
    ![XC-RE-Client](/xc-images/xc-re-client.png)
 
