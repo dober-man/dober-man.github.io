@@ -2,6 +2,7 @@
 layout: default
 title: Preventing Cross Tenant Origin Exposure
 ---
+# Preventing Cross Tenant Origin Exposure in XC
 
 ## Overview
 
@@ -57,8 +58,6 @@ There are at least 4 ways to mitigate this risk.
 
   
 > **A Word on L3/4 DDoS:** L3/4 attacks were brought up several times above when talking about the technicalities of each mitigation method. While a L3/4 attack is not always distributed by nature, most are. One very important concept to keep in mind is the fact that XC natively provides L3/4 DDoS mitigation at our Regional Edges. Even in the examples above where "attack" traffic could make it all the way to the app or at least to the perimeter, if it was a true DDoS, this would get picked up by our Regional Edges and automatically mitigated. 
-
-As far as Layer 7 attacks, they can be stopped at our front door as well. The Load Balancer includes best in class application security features such as, WAAP/WAF, Bot Mitigation, API Discovery and a slew of other security features that can be configured as show in the diagram below. 
 
    ![DDoS](/xc-images/ddos.png)
 
