@@ -5,6 +5,10 @@ title: Preventing XC to XC Malicious Activity
 
 ## Overview
 
+F5 Distributed Cloud offers a suite of powerful features designed to simplify the lives of administrators and engineers. A key aspect of this ease of use comes from **shared objects**, such as **Regional Edge Proxies** which utilize well-known public IP addresses. However, while this shared infrastructure enhances scalability and efficiency, it can also present risks if leveraged by attackers. 
+
+For instance:
+
 1. Customer(x) has tenant(x) in XC with a Load Balancer pointing to their public IP origin servers. These may be behind a perimeter firewall nat (as diagrammed below) or be actual public IPs on the servers. 
 2. Customers perimeter firewall is configured to **deny all inbound traffic to public IP for site1.example.com**
 3. Perimeter Firewall is configured to **allow inbound traffic to public IP for site1.example.com for XC IP's**. (which is a well known and public shared IP range) 
