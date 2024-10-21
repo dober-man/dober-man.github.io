@@ -49,15 +49,16 @@ There are at least 4 ways to mitigate this risk.
    ![ce](/xc-images/ce.png)
 
 
-4. **Private Link** is a paid for addon to XC and can be utilized for connectivity between XC, clients and resources.  This has alot a lot of advantages when dealing with regulatory or other security compliances. 
-The perimeter firewall rules can be simplified to allow traffic only from Private Links and Private Links are accessible only from the tenancy. Private Links can solve for L3-L7 attacks in that the link is entirely private. 
+4. **Private Link** is a paid add-on to XC that enables connectivity between XC, clients, and resources. It offers many advantages, particularly when addressing regulatory and other security compliance requirements. Perimeter firewall rules can be simplified to allow traffic exclusively from Private Links, which are accessible only from the designated tenancy. Private Links can mitigate L3-L7 attacks because the link is entirely private by design.
 
 [XC Private Link](https://www.f5.com/pdf/solution-profiles/introducing-f5-distributed-cloud-private-link-solution-overview.pdf)
 
    ![Private Link](/xc-images/private-l.png)
 
   
-> **A word on L3/4 DDoS:** L3/4 attacks were brought up several times above when talking about the technicalities of each mitigation method. While a L3/4 attack is not always distributed by nature, most are. One very important concept to keep in mind is the fact that XC natively provides L3/4 DDoS mitigation at our Regional Edges. Even in the examples above where "attack" traffic could make it all the way to the app or at least to the perimeter, if it was a true DDoS, this would get picked up by our Regional Edges and automatically mitigated. 
+> **A Word on L3/4 DDoS:** L3/4 attacks were brought up several times above when talking about the technicalities of each mitigation method. While a L3/4 attack is not always distributed by nature, most are. One very important concept to keep in mind is the fact that XC natively provides L3/4 DDoS mitigation at our Regional Edges. Even in the examples above where "attack" traffic could make it all the way to the app or at least to the perimeter, if it was a true DDoS, this would get picked up by our Regional Edges and automatically mitigated. 
+
+As far as Layer 7 attacks, they can be stopped at our front door as well. The Load Balancer includes best in class application security features such as, WAAP/WAF, Bot Mitigation, API Discovery and a slew of other security features that can be configured as show in the diagram below. 
 
    ![DDoS](/xc-images/ddos.png)
 
