@@ -13,7 +13,7 @@ AI/ML comes in to play on the backend when configuring the global policy server.
 
 **Note:** Bot Standard is a paid add-on to the base package in XC.
 
-1.  Enable Bot Standard and edit the policy to add app endpoints Typically application paths like /logon or /cart would be protected but in this scenario we needed to use "/". 
+Enable Bot Standard and edit the policy to add app endpoints Typically application paths like /logon or /cart would be protected but in this scenario we needed to use "/". 
 
   ![App Endpoints](/xc-images/app-end.png)
 
@@ -30,7 +30,7 @@ The GET (XHR) addition was necessary as a second site programmaticly (AJAX) acce
 
 Two exclusions were necessary in this config. The first was for the "autosuggest feature" that is part of the search field on the page. This search field makes autosuggestions as the user enters their search queries. This same field is also used by other sites to perform searches.
 
-1. Several static attempts were made at the config before relying on regex for the pattern match. We ended up with this path match:
+Several static attempts were made at the config before relying on regex for the pattern match. We ended up with this path match:
 
 **^\/catalog\/suggest(?:\?[^#\s]*)?(?:#.*)?$** 
 
@@ -56,7 +56,8 @@ This regex ensures that the string starts with /catalog/suggest and optionally i
 
 ✖ /catalog/suggest (extra space at the end)
 
-2. The second exception is for an assets directory on the server which contained site related config files, images, scripts. We ended up with this regex after a few static definition attempts. Apparently bot standard really likes regex. 
+
+The second exception is for an assets directory on the server which contained site related config files, images, scripts. We ended up with this regex after a few static definition attempts. Apparently bot standard really likes regex. 
 
 **^\/assets\/.*$**
 
