@@ -33,14 +33,17 @@ Two exclusions were necessary. The first was for the "autosuggest feature" that 
 
 This regex ensures that the string starts with /catalog/suggest and optionally includes:
 
-    A query string (e.g., ?key=value&other=123)
-    A fragment identifier (e.g., #section1)
+* A query string (e.g., ?key=value&other=123)
+* A fragment identifier (e.g., #section1)
 
 Example Matches
 
 ✔ /catalog/suggest
+
 ✔ /catalog/suggest?foo=bar
+
 ✔ /catalog/suggest#heading
+
 ✔ /catalog/suggest?foo=bar#heading
 
 What It Does NOT Match
