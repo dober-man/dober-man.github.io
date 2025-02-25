@@ -5,7 +5,7 @@ title: Configuring Bot Standard
 
 ## Overview
 
-* Bot Standard injects an interstitial (blank and transparent to the user other than a bit of latency)page and gathers JS signaling from the client. The interstitial page prevents scraping of the real page and the signaling/challenge-response guarantees a human user. JS challenges are sent to the global policy server to evaluate the response. 
+Bot Standard injects an interstitial (blank and transparent to the user other than a bit of latency)page and gathers JS signaling from the client. The interstitial page prevents scraping of the real page and the signaling/challenge-response guarantees a human user. JS challenges are sent to the global policy server to evaluate the response. 
 
 AI/ML comes in to play on the backend when configuring the global policy server. AI/ML is used to evaluate the reponses and that feedback is then used by XC Security Engineers to set global policy. 
 
