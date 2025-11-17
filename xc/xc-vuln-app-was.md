@@ -28,13 +28,13 @@ Before deploying any vulnerable applications, you must configure:
 
 ---
 
-## Step A — Create the Resource Group
+# Step A — Create the Resource Group
 1. Go to **Resource Groups → Create**  
 2. Name: `rg-vuln-web-lab`  
 3. Region: your preferred region  
 4. Create
 
-# Step A.1 — Configure the Logic App (Expiration-Based Cleanup)
+## Step A.1 — Configure the Logic App (Expiration-Based Cleanup)
 
 This Logic App periodically checks resources for an `expireOn` tag and automatically deletes them after the expiration date/time.
 
