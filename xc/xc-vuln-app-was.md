@@ -54,9 +54,14 @@ This Logic App periodically checks resources for an `expireOn` tag and automatic
 
 Open the **Logic App Designer** and add:
 
-### 1. **Trigger: Recurrence**
+### 1. **Trigger: Schedule** -> **Recurrence**
+
 - Frequency: `1`  
 - Interval: `Day` (or Hour for short-lived demos)
+
+
+    ![Logic App Trigger](/xc-images/logicapp.png)
+
 
 ### 2. **List Resources**
 Add action:  
