@@ -67,6 +67,8 @@ Open the **Logic App Designer** and add:
 Add action:  
 **Azure Resource Manager → List resources (Subscription)**
 
+   ![List Resources](/xc-images/listresource.png)
+
 This fetches all Azure resources so the Logic App can inspect their tags.
 
 ### 3. **For Each Resource**
