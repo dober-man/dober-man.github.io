@@ -1,4 +1,4 @@
----
+--- 
 layout: default
 title: Configuring a Vulnerable App in Azure with XC - WAS
 ---
@@ -111,50 +111,86 @@ This ensures only you (and permitted ranges) can access the vulnerable app.
 
 ## Option 2: VM Deployment Method (Docker on a Linux VM)
 
-### Step 2.1 – Install Docker on the VM
+### Step 2.1 – Create the VM
+
+1. Go to **Virtual Machines → Create → Azure virtual machine**.  
+2. Name: `vuln-web-lab-vm`  
+3. Image: Ubuntu 22.04 LTS  
+4. Size: B2s  
+5. Authentication: SSH key  
+6. Networking:  
+   - NSG: Only allow **SSH (22)** and **HTTP (80/8081/etc.)** from your IP or scanner IPs.
+
+Create the VM.
+
+---
+
+### Step 2.2 – Install Docker on the VM
 
 SSH into your VM and run:
 
+```bash
 sudo apt-get update
 sudo apt-get install -y docker.io
 sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker $USER
+```
+
+Log out and back in (if needed) for group membership to apply.
 
 ---
 
-### Step 2.2 – Run Juice Shop in Docker
+### Step 2.3 – Run Juice Shop in Docker
 
+```bash
 sudo docker run -d --name juiceshop -p 80:3000 bkimminich/juice-shop
+```
 
 Browse to:
 
-http://<VM_PUBLIC_IP>/  
+`http://<VM_PUBLIC_IP>/`  
 (Assuming your NSG rules only allow your IP.)
 
 ---
 
-### Add Other Apps (Optional)
+### Step 2.4 – Lock It Down (Highly Recommended)
+
+On the VM's NIC or subnet NSG:
+
+1. **Inbound rule – allow-my-ip**  
+   - Port 80 (and 8081 if using multiple apps)  
+   - Source: Your IP or scanner CIDR  
+   - Priority: 100  
+
+2. **Deny all**  
+   - Port: Any  
+   - Source: `0.0.0.0/0`  
+   - Priority: 200  
+
+This prevents exposing your vulnerable VM to the entire internet.
+
+---
+
+### Step 2.5 – Add Other Apps (Optional)
 
 Hackazon Example:
 
+```bash
 sudo docker run -d --name hackazon -p 8081:80 xex/hackazon
+```
 
 Browse to:
 
-http://<VM_PUBLIC_IP>:8081/  
+`http://<VM_PUBLIC_IP>:8081/`
 
-Useful when testing multiple apps/ports for detection coverage.
+This setup supports multi-app scanning and multi-port WAF demos.
 
 ---
 
 ## Option 3: Azure Container Instances (ACI)
 
-### Azure Container Instances – Quick Disposable Lab
-
-ACI is ideal for quick, single-container, short-lived labs.
-
-### Instructions
+### Step 3.1 – Create ACI Container
 
 Go to **Container Instances → Create**.
 
@@ -176,7 +212,20 @@ Go to **Container Instances → Create**.
 
 Browse to:
 
-https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
+`https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000`
+
+---
+
+### Step 3.2 – Lock It Down (Highly Recommended)
+
+1. Go to **Networking** → **Firewall** (or use VNet integration).  
+2. Restrict inbound access to:  
+   - Your IP  
+   - XC Scanner ranges  
+3. Deny all other inbound sources.
+
+**Note:**  
+ACI supports public endpoints by default, so restricting access is critical.
 
 ---
 
@@ -188,6 +237,7 @@ Once your vulnerable environment is deployed and isolated, connect your scanning
 
 - **App Service URL**  
 - **VM Public IP or DNS name** on the appropriate port  
+- **ACI DNS name**  
 
 ### WAF / WAAP / Proxy Workflow (F5 XC, BIG-IP, NGINX, Burp, ZAP)
 
