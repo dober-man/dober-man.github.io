@@ -1,135 +1,209 @@
---- 
+---
 layout: default
-title: Configuring a Vulnerable App in Azure with XC - WAS
+title: Configuring a Vulnerable App in Azure with Expiration-Based Cleanup
 ---
 
-# Configuring a Vulnerable App in Azure with XC Web App Scanner (WAS)
+# Deploying Vulnerable Web Apps in Azure With Automated Expiration Cleanup
 
 ## Overview
 
-F5 offers an advanced Web App Scanner in XC.
+This guide helps you deploy intentionally vulnerable web applications (such as OWASP Juice Shop, Hackazon, DVWA, etc.) into Azure **safely**, **locked down**, and with **automatic cleanup** using an Azure Logic App.
 
-A vulnerable web application (Juice Shop) is deployed in Azure and locked down to prevent accidental exposure.  
-Network Security Groups (NSGs) are configured to allow only:
+This prevents:
 
-- Your source IP  
-- XC scanner IP ranges
+- Accidental exposure of vulnerable apps  
+- Lingering cloud resources that continue to incur costs  
 
-In this example, a DNS name such as **site1.myfselab.com** is used.
-
-> **Note:** Add any important caveat or prerequisite here.
+Your Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.
 
 ---
 
-## Juiceshop Deployment Options
+# Prerequisites
+
+Before deploying any vulnerable applications, you must configure:
+
+1. **A Resource Group** where the apps will live  
+2. **A Logic App** that automatically deletes expired resources  
+3. **Tagging standards** so each deployment includes an expiration timestamp  
+
+---
+
+# Step A — Configure the Logic App (Expiration-Based Cleanup)
+
+This Logic App periodically checks resources for an `expireOn` tag and automatically deletes them after the expiration date/time.
+
+## Step A.1 — Create the Logic App
+
+1. Go to **Azure Portal → Logic Apps → Create**  
+2. Choose **Consumption** (recommended for PoCs)  
+3. Use:
+   - **Resource group:** `rg-vuln-web-lab`
+   - **Name:** `vuln-lab-expiration-cleanup`
+   - **Region:** same as your lab resources  
+4. Click **Review + create → Create**
+
+---
+
+## Step A.2 — Build the Logic App Workflow
+
+Open the **Logic App Designer** and add:
+
+### 1. **Trigger: Recurrence**
+- Frequency: `1`  
+- Interval: `Day` (or Hour for short-lived demos)
+
+### 2. **List Resources**
+Add action:  
+**Azure Resource Manager → List resources (Subscription)**
+
+This fetches all Azure resources so the Logic App can inspect their tags.
+
+### 3. **For Each Resource**
+Add **For Each** and loop over the resource list.
+
+Inside the loop:
+
+### 4. **Condition: Check for expireOn tag**
+Use an expression such as:
+
+```
+@if(lessOrEquals(item()?['tags']?['expireOn'], utcNow()), true, false)
+```
+
+### 5. **If TRUE → Delete Resource**
+Add:
+
+**Azure Resource Manager → Delete resource**
+
+Use the resource ID from the loop item.
+
+### 6. (Optional) **Send Notification**
+Actions you can attach:
+
+- Send email  
+- Teams notification  
+- Webhook to monitoring system  
+
+---
+
+# Tagging Standard for All Deployments
+
+Every vulnerable environment must include:
+
+| Tag Key     | Purpose |
+|-------------|---------|
+| **expireOn** | UTC timestamp when cleanup should occur |
+| **owner** | Useful for multi-user labs |
+| **demo** | Identifies purpose (ex: juiceshop-aci) |
+
+### Example Tag Format
+
+```
+expireOn = 2025-11-25T23:59:00Z
+owner    = mike
+demo     = juiceshop-lab
+```
+
+---
+
+# Deployment Options for Juice Shop
 
 You can deploy Juice Shop three different ways:
 
-1. **Azure App Service (recommended):** Clean, repeatable XC WAS/WAF demo.   
-2. **VM with Docker:** A “mini-lab server” supporting multiple vuln apps.   
-3. **Azure Container Instances (ACI):** Fast, disposable targets for quick PoCs. 
+1. **Azure App Service (Recommended)**  
+2. **Azure VM + Docker**  
+3. **Azure Container Instances (ACI)**  
 
-## Deployment Cost and Timeframe Recommendations
-
-Below is a simple comparison of the three deployment methods:
-
-| Deployment Option | Daily Cost | Ideal Duration | Hard Cutoff | Why Choose It |
-|-------------------|-----------|----------------|-------------|----------------|
-| **Azure Container Instances (ACI)** | ~$1.30/day | **0–3 days** | **≤ 7 days** | Fast, disposable, no maintenance, cheapest for very short PoCs |
-| **Azure App Service (B1 Plan)** | ~$1.83/day | **3–14 days** | **≤ 14 days** | Easiest deployment, built-in HTTPS, great for clean XC demos |
-| **Azure VM (1 vCPU / 2GB)** | ~$0.80/day | **14+ days** | Best long-term | Cheapest over time, supports multiple vuln apps, full OS control |
-
-
-Choose whichever best matches your demo needs.
+Each option below includes where to set your expiration tags.
 
 ---
 
-## Option 1: Deploying via Azure App Service (Recommended)
+# Option 1 — Azure App Service (Recommended)
 
-### Step 1.1 – Create a Resource Group
+### Recommended Tag Example
+```
+expireOn = 2025-11-25T23:59:00Z
+demo     = juice-appservice
+```
 
-1. In the Azure Portal, go to **Resource groups → Create**.  
-2. Name it **rg-vuln-web-lab**.  
-3. Select your subscription and region.  
-4. Click **Review + create → Create**.
+## Step 1.1 — Create the Resource Group
+1. Go to **Resource Groups → Create**  
+2. Name: `rg-vuln-web-lab`  
+3. Region: your preferred region  
+4. Create
 
 ---
 
-### Step 1.2 – Create the Web App (Docker/Linux)
+## Step 1.2 — Deploy the App Service
 
-Navigate to **App Services → Create → Web App**.
+Navigate to **App Services → Create → Web App**
 
-#### Basics
+### Basics
+- Publish: **Docker Container**  
+- OS: **Linux**  
+- Plan: **B1**  
+- Image: `bkimminich/juice-shop:latest`  
+- Region: Same as RG  
 
-- **Subscription:** Your test subscription  
-- **Resource Group:** `rg-vuln-web-lab`  
-- **Name:** `juiceshop-lab-<unique>`  
-- **Publish:** Docker Container  
-- **Operating System:** Linux  
-- **Region:** Same as RG  
-- **Pricing:** B1 or similar (cheap tier works)
+Deploy and verify:
 
-#### Docker Settings
-
-- **Options:** Single Container  
-- **Image Source:** Docker Hub  
-- **Access Type:** Public  
-- **Image & Tag:** `bkimminich/juice-shop:latest`
-
-Monitoring: Accept defaults.  
-Click **Review + create → Create**.
-
-Azure will provide a URL such as:  
+```
 https://juiceshop-lab-<unique>.azurewebsites.net
-
-Visit the URL to confirm the app loads.
-
----
-
-### Step 1.3 – Lock It Down (Highly Recommended)
-
-In the Web App:
-
-1. Go to **Networking → Access restrictions**.  
-2. Add rule:
-
-   - **Name:** allow-my-ip  
-   - **Action:** Allow  
-   - **Priority:** 100  
-   - **IP:** Your public IP (or office/VPN CIDR)
-
-3. Add second rule:
-
-   - **Name:** deny-all  
-   - **Action:** Deny  
-   - **Priority:** 200  
-   - **IP:** `0.0.0.0/0`
-
-This ensures only you (and permitted ranges) can access the vulnerable app.
+```
 
 ---
 
-## Option 2: VM Deployment Method (Docker on a Linux VM)
+## Step 1.3 — Lock It Down
 
-### Step 2.1 – Create the VM
+Go to:
 
-1. Go to **Virtual Machines → Create → Azure virtual machine**.  
-2. Name: `vuln-web-lab-vm`  
-3. Image: Ubuntu 22.04 LTS  
-4. Size: B2s  
-5. Authentication: SSH key  
-6. Networking:  
-   - NSG: Only allow **SSH (22)** and **HTTP (80/8081/etc.)** from your IP or scanner IPs.
+**Web App → Networking → Access Restrictions**
 
-Create the VM.
+Add:
+
+1. **allow-my-ip**
+2. **allow-scanner-ips** (if applicable)
+3. **deny-all** (0.0.0.0/0)
 
 ---
 
-### Step 2.2 – Install Docker on the VM
+## Step 1.4 — Add Expiration Tags
 
-SSH into your VM and run:
+Go to:
 
-```bash
+**Web App → Settings → Configuration → Tags**
+
+Add:
+
+```
+expireOn = <UTC timestamp>
+owner    = mike
+demo     = juice-appservice
+```
+
+---
+
+# Option 2 — Deploy on Azure VM (Docker)
+
+### Recommended Tag Example
+```
+expireOn = 2025-11-25T23:59:00Z
+demo     = juice-vm
+```
+
+## Step 2.1 — Create the VM
+- Ubuntu 22.04  
+- Size: B2s  
+- NSG inbound rules: allow only  
+  - your IP  
+  - scanner IPs  
+  - deny-all for rest  
+
+---
+
+## Step 2.2 — Install Docker
+
+```
 sudo apt-get update
 sudo apt-get install -y docker.io
 sudo systemctl enable docker
@@ -137,111 +211,115 @@ sudo systemctl start docker
 sudo usermod -aG docker $USER
 ```
 
-Log out and back in (if needed) for group membership to apply.
-
 ---
 
-### Step 2.3 – Run Juice Shop in Docker
+## Step 2.3 — Run Juice Shop
 
-```bash
+```
 sudo docker run -d --name juiceshop -p 80:3000 bkimminich/juice-shop
 ```
 
-Browse to:
+Browse:
 
-`http://<VM_PUBLIC_IP>/`  
-(Assuming your NSG rules only allow your IP.)
-
----
-
-### Step 2.4 – Lock It Down (Highly Recommended)
-
-On the VM's NIC or subnet NSG:
-
-1. **Inbound rule – allow-my-ip**  
-   - Port 80 (and 8081 if using multiple apps)  
-   - Source: Your IP or scanner CIDR  
-   - Priority: 100  
-
-2. **Deny all**  
-   - Port: Any  
-   - Source: `0.0.0.0/0`  
-   - Priority: 200  
-
-This prevents exposing your vulnerable VM to the entire internet.
-
----
-
-### Step 2.5 – Add Other Apps (Optional)
-
-Hackazon Example:
-
-```bash
-sudo docker run -d --name hackazon -p 8081:80 xex/hackazon
+```
+http://<VM_PUBLIC_IP>/
 ```
 
-Browse to:
+---
 
-`http://<VM_PUBLIC_IP>:8081/`
-
-This setup supports multi-app scanning and multi-port WAF demos.
+## Step 2.4 — Lock It Down with NSG
+- allow-my-ip  
+- allow-scanner-ips  
+- deny-all  
 
 ---
 
-## Option 3: Azure Container Instances (ACI)
+## Step 2.5 — Add Expiration Tags
 
-### Step 3.1 – Create ACI Container
+Go to:
 
-Go to **Container Instances → Create**.
+**VM → Tags**
 
-### Basics
+Add:
 
-- **Resource Group:** rg-vuln-web-lab  
-- **Container name:** juiceshop-aci  
-- **Region:** same as RG  
-- **Image source:** Docker Hub  
-- **Image type:** Public  
-- **Image:** bkimminich/juice-shop  
-- **Size:** Small (1 vCPU, 2GB RAM)
-
-### Networking
-
-- **Networking type:** Public  
-- **DNS name label:** juiceshop-aci-<unique>  
-- **Ports:** 3000  
-
-Browse to:
-
-`https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000`
+```
+expireOn = <UTC timestamp>
+owner    = mike
+demo     = juice-vm
+```
 
 ---
 
-### Step 3.2 – Lock It Down (Highly Recommended)
+# Option 3 — Azure Container Instances (ACI)
 
-1. Go to **Networking** → **Firewall** (or use VNet integration).  
-2. Restrict inbound access to:  
-   - Your IP  
-   - XC Scanner ranges  
-3. Deny all other inbound sources.
+### Recommended Tag Example
+```
+expireOn = 2025-11-25T23:59:00Z
+demo     = juice-aci
+```
 
-**Note:**  
-ACI supports public endpoints by default, so restricting access is critical.
+## Step 3.1 — Create ACI
+
+- Image: `bkimminich/juice-shop`  
+- CPU/RAM: 1 vCPU / 2 GB  
+- Networking: Public  
+- Port: 3000  
+
+The URL will look like:
+
+```
+https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
+```
 
 ---
 
-## Step 4 – Hooking Your Scanner / WAF / Tools Into This
+## Step 3.2 — Lock It Down
 
-Once your vulnerable environment is deployed and isolated, connect your scanning and security tools.
+Use ACI Firewall or attach to a VNet with NSG:
 
-### Scanner Targets
+- allow-my-ip  
+- allow-scanner-ips  
+- deny-all  
 
-- **App Service URL**  
-- **VM Public IP or DNS name** on the appropriate port  
-- **ACI DNS name**  
+---
 
-### WAF / WAAP / Proxy Workflow (F5 XC, BIG-IP, NGINX, Burp, ZAP)
+## Step 3.3 — Add Expiration Tags
 
-- Place the WAF or proxy in front of the vulnerable app.  
-- Configure the backend/origin to Juice Shop or Hackazon.  
-- Run scans through the WAF/proxy path.  
-- Observe logs, signature hits, learning events, and blocking behavior.
+Go to:
+
+**Container Instance → Tags**
+
+Add:
+
+```
+expireOn = <UTC timestamp>
+owner    = mike
+demo     = juice-aci
+```
+
+---
+
+# Step 4 — (Optional) Integrate With Scanners / WAF
+
+Once your apps are deployed and locked down, you may route them through:
+
+- F5 XC WAAP  
+- BIG-IP WAF  
+- NGINX App Protect  
+- Burp/ZAP  
+- Custom scanners  
+
+But this is **separate** from the Logic App cleanup process.
+
+---
+
+# Cleanup Happens Automatically
+
+When the expiration timestamp is reached:
+
+- Logic App detects expired resources  
+- Deletes them  
+- (Optional) Sends notification  
+
+Your environment stays clean and cost-effective.
+
