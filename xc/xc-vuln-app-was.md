@@ -21,13 +21,24 @@ In this example, a DNS name such as **site1.myfselab.com** is used.
 
 ---
 
-## Azure Configuration
+## Juiceshop Deployment Options
 
 You can deploy Juice Shop three different ways:
 
 1. **Azure App Service (recommended):** Clean, repeatable XC WAS/WAF demo. Semi-persistent.  
 2. **VM with Docker:** A “mini-lab server” supporting multiple vuln apps. Persistent.  
 3. **Azure Container Instances (ACI):** Fast, disposable targets for quick PoCs. Non-persistent.
+
+## Deployment Cost Comparison
+
+Below is a simple comparison of the three deployment methods:
+
+| Deployment Option | Approx. Cost | Persistence | Notes |
+|-------------------|-------------|-------------|-------|
+| **Azure App Service (B1 Plan)** | ~$54.75/month | **Semi-persistent** | Always billed while the plan exists. Easy HTTPS, easiest demo setup. |
+| **Azure VM (1 vCPU / 2GB)** | ~$22–$25/month | **Persistent** | Full control, supports multiple vuln apps, OS must be maintained. |
+| **Azure Container Instances (ACI)** | Pay-per-second | **Non-persistent** | Extremely cheap for short-lived demos. Not good for long-running services. |
+
 
 Choose whichever best matches your demo needs.
 
