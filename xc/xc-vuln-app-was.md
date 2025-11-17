@@ -14,7 +14,7 @@ This prevents:
 - Accidental exposure of vulnerable apps  
 - Lingering cloud resources that continue to incur costs  
 
-Your Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.
+The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.
 
 ---
 
@@ -28,11 +28,17 @@ Before deploying any vulnerable applications, you must configure:
 
 ---
 
-# Step A — Configure the Logic App (Expiration-Based Cleanup)
+## Step A — Create the Resource Group
+1. Go to **Resource Groups → Create**  
+2. Name: `rg-vuln-web-lab`  
+3. Region: your preferred region  
+4. Create
+
+# Step A.1 — Configure the Logic App (Expiration-Based Cleanup)
 
 This Logic App periodically checks resources for an `expireOn` tag and automatically deletes them after the expiration date/time.
 
-## Step A.1 — Create the Logic App
+## Step A.2 — Create the Logic App
 
 1. Go to **Azure Portal → Logic Apps → Create**  
 2. Choose **Consumption** (recommended for PoCs)  
@@ -44,7 +50,7 @@ This Logic App periodically checks resources for an `expireOn` tag and automatic
 
 ---
 
-## Step A.2 — Build the Logic App Workflow
+## Step A.3 — Build the Logic App Workflow
 
 Open the **Logic App Designer** and add:
 
@@ -125,12 +131,6 @@ Each option below includes where to set your expiration tags.
 expireOn = 2025-11-25T23:59:00Z
 demo     = juice-appservice
 ```
-
-## Step 1.1 — Create the Resource Group
-1. Go to **Resource Groups → Create**  
-2. Name: `rg-vuln-web-lab`  
-3. Region: your preferred region  
-4. Create
 
 ---
 
