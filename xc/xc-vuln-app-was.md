@@ -7,14 +7,14 @@ title: Configuring a Vulnerable App in Azure with XC - WAS
 
 ## Overview
 
-This guide helps you deploy intentionally vulnerable web applications (such as OWASP Juice Shop, Hackazon, DVWA, etc.) into Azure **safely**, **locked down**, and with **automatic cleanup** using an Azure Logic App.
+This guide helps you deploy intentionally vulnerable web applications (such as OWASP Juice Shop, Hackazon, DVWA, etc.) into Azure **safely**, **locked down**, and with **automatic cleanup** using an Azure Logic App. Cost ~$0.001 – $0.02 per month
 
 This prevents:
 
 - Accidental exposure of vulnerable apps  
 - Lingering cloud resources that continue to incur costs  
 
-The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.
+The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled. 
 
 ---
 
