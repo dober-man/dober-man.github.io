@@ -23,6 +23,18 @@ In this example, a DNS name such as **site1.myfselab.com** is used.
 
 ## Azure Configuration
 
+You can deploy Juice Shop three different ways:
+
+1. **Azure App Service (recommended):** Clean, repeatable XC WAS/WAF demo. Semi-persistent.  
+2. **VM with Docker:** A “mini-lab server” supporting multiple vuln apps. Persistent.  
+3. **Azure Container Instances (ACI):** Fast, disposable targets for quick PoCs. Non-persistent.
+
+Choose whichever best matches your demo needs.
+
+---
+
+## Option 1: Deploying via Azure App Service (Recommended)
+
 ### Step 1.1 – Create a Resource Group
 
 1. In the Azure Portal, go to **Resource groups → Create**.  
@@ -56,8 +68,8 @@ Navigate to **App Services → Create → Web App**.
 Monitoring: Accept defaults.  
 Click **Review + create → Create**.
 
-Azure will provide a URL such as: https://juiceshop-lab-<something>.azurewebsites.net
-
+Azure will provide a URL such as:  
+https://juiceshop-lab-<unique>.azurewebsites.net
 
 Visit the URL to confirm the app loads.
 
@@ -75,7 +87,7 @@ In the Web App:
    - **Priority:** 100  
    - **IP:** Your public IP (or office/VPN CIDR)
 
-3. Add another rule:
+3. Add second rule:
 
    - **Name:** deny-all  
    - **Action:** Deny  
@@ -86,53 +98,50 @@ This ensures only you (and permitted ranges) can access the vulnerable app.
 
 ---
 
-## Optional: VM Deployment Method
+## Option 2: VM Deployment Method (Docker on a Linux VM)
 
 ### Step 2.1 – Install Docker on the VM
 
 SSH into your VM and run:
 
-```bash
 sudo apt-get update
 sudo apt-get install -y docker.io
 sudo systemctl enable docker
 sudo systemctl start docker
 sudo usermod -aG docker $USER
-```
+
+---
 
 ### Step 2.2 – Run Juice Shop in Docker
 
-To launch Juice Shop on your VM:
-
-```bash
 sudo docker run -d --name juiceshop -p 80:3000 bkimminich/juice-shop
-``` 
 
-Once running, browse to:
+Browse to:
 
-http://<VM_PUBLIC_IP>/
-
+http://<VM_PUBLIC_IP>/  
 (Assuming your NSG rules only allow your IP.)
 
+---
+
 ### Add Other Apps (Optional)
-Hackazon Example
 
-Deploy Hackazon using a public Docker image:
+Hackazon Example:
 
-```bash
 sudo docker run -d --name hackazon -p 8081:80 xex/hackazon
-```
-Access it at:
 
-http://<VM_PUBLIC_IP>:8081/
+Browse to:
 
-You can direct scanners at additional ports/apps to test detection and coverage.
+http://<VM_PUBLIC_IP>:8081/  
 
-### Optional Deployment Method – Azure Container Instances (ACI)
+Useful when testing multiple apps/ports for detection coverage.
 
-## Azure Container Instances – Quick Disposable Lab
+---
 
-Azure Container Instances provide a quick, disposable lab.
+## Option 3: Azure Container Instances (ACI)
+
+### Azure Container Instances – Quick Disposable Lab
+
+ACI is ideal for quick, single-container, short-lived labs.
 
 ### Instructions
 
