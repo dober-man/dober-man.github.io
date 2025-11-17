@@ -3,187 +3,175 @@ layout: default
 title: Configuring a Vulnerable App in Azure with XC - WAS
 ---
 
+# Configuring a Vulnerable App in Azure with XC Web App Scanner (WAS)
+
 ## Overview
 
-F5 offers an advanced Web App Scanner in XC. 
-Pricing: 
+F5 offers an advanced Web App Scanner in XC.
 
-A vulnerable webapp (Juiceshop) is installed in Azure and locked down to prevent accidental exposure. 
-NSG's are confugred to only allow my source IP and the XC scanner IP's 
+A vulnerable web application (Juice Shop) is deployed in Azure and locked down to prevent accidental exposure.  
+Network Security Groups (NSGs) are configured to allow only:
 
-* In this example a site called site1.myfselab.com is used. 
+- Your source IP  
+- XC scanner IP ranges
 
-**Note:** Something
+In this example, a DNS name such as **site1.myfselab.com** is used.
 
-## Azure Config
+> **Note:** Add any important caveat or prerequisite here.
+
+---
+
+## Azure Configuration
 
 ### Step 1.1 – Create a Resource Group
 
-In the Azure Portal: Resource groups → Create Name **rg-vuln-web-lab**
-* Choose your subscription + region.
-* Click Review + create → Create.
+1. In the Azure Portal, go to **Resource groups → Create**.  
+2. Name it **rg-vuln-web-lab**.  
+3. Select your subscription and region.  
+4. Click **Review + create → Create**.
+
+---
 
 ### Step 1.2 – Create the Web App (Docker/Linux)
 
-App Services → Create → Web App.
+Navigate to **App Services → Create → Web App**.
 
-#### Basics:
+#### Basics
 
-Subscription: your test sub
+- **Subscription:** Your test subscription  
+- **Resource Group:** `rg-vuln-web-lab`  
+- **Name:** `juiceshop-lab-<unique>`  
+- **Publish:** Docker Container  
+- **Operating System:** Linux  
+- **Region:** Same as RG  
+- **Pricing:** B1 or similar (cheap tier works)
 
-Resource Group: rg-vuln-web-lab
+#### Docker Settings
 
-Name: e.g. juiceshop-lab-<unique>
+- **Options:** Single Container  
+- **Image Source:** Docker Hub  
+- **Access Type:** Public  
+- **Image & Tag:** `bkimminich/juice-shop:latest`
 
-Publish: Docker Container
+Monitoring: Accept defaults.  
+Click **Review + create → Create**.
 
-Operating System: Linux
+Azure will provide a URL such as: https://juiceshop-lab-<something>.azurewebsites.net
 
-Region: same as RG
 
-Pricing: a cheap tier is fine (B1 or similar)
+Visit the URL to confirm the app loads.
 
-Docker tab:
+---
 
-Options: Single Container
+### Step 1.3 – Lock It Down (Highly Recommended)
 
-Image Source: Docker Hub
+In the Web App:
 
-Access Type: Public
+1. Go to **Networking → Access restrictions**.  
+2. Add rule:
 
-Image and tag:
-bkimminich/juice-shop:latest
+   - **Name:** allow-my-ip  
+   - **Action:** Allow  
+   - **Priority:** 100  
+   - **IP:** Your public IP (or office/VPN CIDR)
 
-Monitoring: you can leave defaults.
+3. Add another rule:
 
-Review + create → Create.
+   - **Name:** deny-all  
+   - **Action:** Deny  
+   - **Priority:** 200  
+   - **IP:** `0.0.0.0/0`
 
-Once deployed, Azure will give you a URL like:
+This ensures only you (and permitted ranges) can access the vulnerable app.
 
-https://juiceshop-lab-<something>.azurewebsites.net
+---
 
-Visit it in a browser to confirm it loads.
-
-###  Step 1.3 – Lock it down (super important)
-
-From the Web App:
-
-Go to Networking → Access restrictions.
-
-Add a rule:
-
-Name: allow-my-ip
-
-Action: Allow
-
-Priority: 100
-
-IP: your public IP (or your office / VPN IP range).
-
-Add a second rule:
-
-Name: deny-all
-
-Action: Deny
-
-Priority: 200
-
-IP: 0.0.0.0/0
-
-Now only you (and your chosen ranges) can hit the vuln app.
+## Optional: VM Deployment Method
 
 ### Step 2.1 – Install Docker on the VM
 
-SSH into the VM:
+SSH into your VM and run:
 
-# Update
+```bash
 sudo apt-get update
-
-# Install Docker
 sudo apt-get install -y docker.io
-
-# Enable & start
 sudo systemctl enable docker
 sudo systemctl start docker
-
-# Add your user to docker group (optional)
 sudo usermod -aG docker $USER
-
+```
 
 ### Step 2.2 – Run Juice Shop in Docker
 
+To launch Juice Shop on your VM:
 
+```bash
 sudo docker run -d --name juiceshop -p 80:3000 bkimminich/juice-shop
+``` 
 
-Now http://<VM_PUBLIC_IP>/ should show Juice Shop (again, hopefully only reachable from your IP due to NSG rules).
+Once running, browse to:
 
-### Step 2.3 – Add other apps (optional)
+http://<VM_PUBLIC_IP>/
 
-Hackazon: (one simple approach – there are several images out there):
+(Assuming your NSG rules only allow your IP.)
+
+### Add Other Apps (Optional)
+Hackazon Example
+
+Deploy Hackazon using a public Docker image:
+
+```bash
 sudo docker run -d --name hackazon -p 8081:80 xex/hackazon
+```
+Access it at:
 
-Hit it at: http://<VM_PUBLIC_IP>:8081/
+http://<VM_PUBLIC_IP>:8081/
 
-You can then point your scanner at specific ports/apps to test coverage and detection.
+You can direct scanners at additional ports/apps to test detection and coverage.
 
-## Optional Deployment Method (to test)
-Option C: Azure Container Instances (ACI) for quick, throwaway labs
+### Optional Deployment Method – Azure Container Instances (ACI)
 
-If you don’t want a full VM:
+## Azure Container Instances – Quick Disposable Lab
 
-Container instances → Create.
+Azure Container Instances provide a quick, disposable lab.
 
-Basics:
+### Instructions
 
-Resource Group: rg-vuln-web-lab
+Go to **Container Instances → Create**.
 
-Container name: juiceshop-aci
+### Basics
 
-Region: same as RG
+- **Resource Group:** rg-vuln-web-lab  
+- **Container name:** juiceshop-aci  
+- **Region:** same as RG  
+- **Image source:** Docker Hub  
+- **Image type:** Public  
+- **Image:** bkimminich/juice-shop  
+- **Size:** Small (1 vCPU, 2GB RAM)
 
-Image source: Docker Hub
+### Networking
 
-Image type: Public
+- **Networking type:** Public  
+- **DNS name label:** juiceshop-aci-<unique>  
+- **Ports:** 3000  
 
-Image: bkimminich/juice-shop
+Browse to:
 
-Size: small (1 vCPU, 2GB RAM is plenty).
+https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
 
-Networking:
+---
 
-Networking type: Public
+## Step 4 – Hooking Your Scanner / WAF / Tools Into This
 
-DNS name label: juiceshop-aci-<unique>
+Once your vulnerable environment is deployed and isolated, connect your scanning and security tools.
 
-Ports: 3000
+### Scanner Targets
 
-Review + create → Create.
+- **App Service URL**  
+- **VM Public IP or DNS name** on the appropriate port  
 
-Browse to: http://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000.
+### WAF / WAAP / Proxy Workflow (F5 XC, BIG-IP, NGINX, Burp, ZAP)
 
-Use NSG / firewall rules or restrict at the VNet level if you use Private networking instead.
-
-
-## Step 4 Hooking your scanner / WAF / tool into this
-
-Once your broken app is up and isolated:
-
-Point your web app scanner at:
-
-the App Service URL, or
-
-the VM public IP / DNS name + port.
-
-If you’re testing WAAP / WAF / proxy (like F5 XC, Burp, ZAP, etc.):
-
-Put the proxy/WAF in front of the vulnerable app.
-
-Configure the backend (origin) to point to the Juice Shop / Hackazon endpoint.
-
-Run scans through that path and watch logs, signatures, learning, etc.
-
-
-
-
-
-
+- Place the WAF or proxy in front of the vulnerable app.  
+- Configure the backend/origin to Juice Shop or Hackazon.  
+- Run scans through the WAF/proxy path.  
+- Observe logs, signature hits, learning events, and blocking behavior.
