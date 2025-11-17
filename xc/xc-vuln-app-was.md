@@ -29,18 +29,9 @@ You can deploy Juice Shop three different ways:
 2. **VM with Docker:** A “mini-lab server” supporting multiple vuln apps.   
 3. **Azure Container Instances (ACI):** Fast, disposable targets for quick PoCs. 
 
-## Deployment Cost Comparison
+## Deployment Cost and Timeframe Recommendations
 
 Below is a simple comparison of the three deployment methods:
-
-| Deployment Option | Approx. Cost | Persistence | Notes |
-|-------------------|-------------|-------------|-------|
-| **Azure App Service (B1 Plan)** | ~$54.75/month | **Semi-persistent** | Always billed while the plan exists. Easy HTTPS, easiest demo setup. |
-| **Azure VM (1 vCPU / 2GB)** | ~$22–$25/month | **Persistent** | Full control, supports multiple vuln apps, OS must be maintained. |
-| **Azure Container Instances (ACI)** | Pay-per-second | **Non-persistent** | Extremely cheap for short-lived demos. Not good for long-running services. |
-
-
-## Deployment Method Timeframe Recommendations
 
 | Deployment Option | Daily Cost | Ideal Duration | Hard Cutoff | Why Choose It |
 |-------------------|-----------|----------------|-------------|----------------|
