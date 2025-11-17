@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Configuring a Vulnerable App in Azure with Expiration-Based Cleanup
+title: Configuring a Vulnerable App in Azure with XC - WAS
 ---
 
 # Deploying Vulnerable Web Apps in Azure With Automated Expiration Cleanup
