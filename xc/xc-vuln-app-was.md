@@ -138,13 +138,27 @@ Select:
 
 ---
 
-## 4. Add **For Each**
+<img src="./xc-images/action.png" style="max-width:600px; width:100%; height:auto;">
+
+Click **Save** 
+
+## 4. Add Action **For Each**
 
 Loop over the `value` array from the List Resources action.
+Enter: **@body('List_resources_by_resource_group')?['value']** in the "Select an output from previous steps" field. 
+
+<img src="./xc-images/value.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
 ## 5. Condition: Check `expireOn` tag
+
+Click the Blue Plus inside of the **For each** actions box and **Add an Action**. 
+
+Search for **Condition***.
+
+<img src="./xc-images/condition.png" style="max-width:600px; width:100%; height:auto;">
+
 
 Expression:
 
