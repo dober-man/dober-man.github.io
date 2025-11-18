@@ -79,9 +79,17 @@ The Logic App needs **Contributor** rights to delete expired resources.
 4. Select:  
    - **Role:** Contributor  
    - **Assign access to:** Managed Identity  
+
+<img src="./xc-images/role.png" style="max-width:600px; width:100%; height:auto;">
+
+<img src="./xc-images/mi.png" style="max-width:600px; width:100%; height:auto;">
+
 5. Select member:  
    - **Type:** Logic App  
    - **Name:** `vuln-lab-expiration-cleanup`  
+
+<img src="./xc-images/object.png" style="max-width:600px; width:100%; height:auto;">
+
 6. Click **Save**
 
 The Logic App now has permissions.
