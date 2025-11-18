@@ -1,4 +1,4 @@
---- 
+---
 layout: default
 title: Configuring a Vulnerable App in Azure with XC - WAS
 ---
@@ -7,62 +7,91 @@ title: Configuring a Vulnerable App in Azure with XC - WAS
 
 ## Overview
 
-This guide helps you deploy intentionally vulnerable web applications (such as OWASP Juice Shop, Hackazon, DVWA, etc.) into Azure **safely**, **locked down**, and with **automatic cleanup** using an Azure Logic App. 
+This guide helps you deploy intentionally vulnerable web applications (such as OWASP Juice Shop, Hackazon, DVWA, etc.) into Azure **safely**, **locked down**, and with **automatic cleanup** using an Azure Logic App.
 
 This prevents:
 
 - Accidental exposure of vulnerable apps  
 - Lingering cloud resources that continue to incur costs  
 
-The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled. The Logic App costs ~$0.001 – $0.02 per month.
+The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.  
+**Cost:** ~$0.001 – $0.02 per month.
 
 ---
 
 # Prerequisites
 
-Before deploying any vulnerable applications, you must configure:
+Before deploying any vulnerable applications, configure:
 
-1. **A Resource Group** where the apps will live  
-2. **A Logic App** that automatically deletes expired resources  
-3. **Tagging standards** so each deployment includes an expiration timestamp  
+1. **A Resource Group** for deployment  
+2. **A Logic App** with Managed Identity enabled  
+3. **RBAC permissions** so the Logic App can delete expired resources  
+4. **Tagging standards** for consistent cleanup  
 
 ---
 
 # Step A — Create the Resource Group
-1. Go to **Resource Groups → Create**  
-2. Name: `rg-vuln-web-lab`  
-3. Region: your preferred region  
-4. Create
+
+1. Go to **Resource Groups → Create**
+2. Name: `rg-vuln-web-lab`
+3. Region: Your preferred region
+4. Click **Create**
 
 ---
 
-## Step A.1 — Configure the Logic App (Expiration-Based Cleanup)
+# Step A.1 — Create the Logic App
 
-This Logic App periodically checks resources for an `expireOn` tag and automatically deletes them after the expiration date/time.
-
----
-
-## Step A.2 — Create the Logic App
-
-1. Go to **Azure Portal → Logic Apps → Create**  
-2. Choose **Consumption** (recommended for PoCs)  
-3. Use:
-   - **Resource group:** `rg-vuln-web-lab`
-   - **Name:** `vuln-lab-expiration-cleanup`
-   - **Region:** same as your lab resources  
-4. Click **Review + create → Create**
+1. Go to **Azure Portal → Logic Apps → Create**
+2. Plan Type: **Consumption**
+3. Resource Group: `rg-vuln-web-lab`
+4. Name: `vuln-lab-expiration-cleanup`
+5. Region: Same as RG
+6. Click **Review + Create → Create**
 
 ---
 
-## Step A.3 — Build the Logic App Workflow
+# Step A.2 — Enable Managed Identity (Required)
 
-Open the **Logic App Designer** and follow the steps below.
+1. Open the Logic App  
+2. Left menu → **Identity**  
+3. Under **System Assigned**, toggle **On**  
+4. Click **Save**
+
+Now the Logic App has:
+
+- A system-assigned Managed Identity  
+- An Object ID (GUID)
 
 ---
 
-### 1. Trigger: **Schedule → Recurrence**
+# Step A.3 — Grant RBAC Permissions on the Resource Group
 
-Configure the trigger:
+The Logic App needs **Contributor** rights to delete expired resources.
+
+1. Go to: **Resource groups → rg-vuln-web-lab**  
+2. Left menu → **Access Control (IAM)**  
+3. Click **Add → Add role assignment**  
+4. Select:  
+   - **Role:** Contributor  
+   - **Assign access to:** Managed Identity  
+5. Select member:  
+   - **Type:** Logic App  
+   - **Name:** `vuln-lab-expiration-cleanup`  
+6. Click **Save**
+
+The Logic App now has permissions.
+
+---
+
+# Step A.4 — Build the Logic App Workflow
+
+Open **Logic App Designer** and follow these steps.
+
+---
+
+## 1. Trigger: **Schedule → Recurrence**
+
+Configure:
 
 - **Frequency:** Day  
 - **Interval:** 1  
@@ -71,99 +100,80 @@ Configure the trigger:
 
 ---
 
-### 2. Add Action: **List Resources (By Resource Group)**
+## 2. Add Action: **List Resources (By Resource Group)**
 
-Add the action:
+Action:
 
 **Azure Resource Manager → List resources (Resource Group)**
 
 <img src="./xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
 
-This retrieves all resources inside **rg-vuln-web-lab** so the Logic App can inspect each resource’s tags.
+This retrieves all resources in `rg-vuln-web-lab`.
 
 ---
 
-### 3. Add Connection (Authentication)
+## 3. Create ARM Connection Using Managed Identity
 
-When prompted to create a connection, select:
-
-- **Authentication:** Managed identity (recommended)
-
-This ensures the Logic App uses its own identity to access and delete resources in the scoped Resource Group.
-
-<img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
-
-#### Other Authentication Options (When to Use / Avoid)
-
-- **OAuth:**  
-  Uses *your* user account. Good for quick testing but not ideal for long-term or least-privilege automation.
-
-- **Service Principal:**  
-  Useful for large enterprise deployments where app registrations and secrets are standardized. Overkill for a small lab.
-
----
-
-### 4. Configure Managed Identity (Recommended)
-
-#### **A. Enable the Logic App’s Managed Identity**
-
-1. Open your Logic App  
-2. Go to **Identity** (left menu)  
-3. Under **System assigned**, toggle **On**  
-4. Click **Save**
-
-#### **B. Grant RBAC Permissions on the Resource Group**
-
-1. Go to **Resource groups → rg-vuln-web-lab**  
-2. Open **Access control (IAM)**  
-3. Select **Add role assignment**  
-4. Choose **Contributor** (required for delete operations)  
-5. Assign access to: **Managed Identity**  
-6. Select your Logic App → Save
-
-#### **C. Complete the Connection Setup**
-
-Back in the “Create connection” dialog:
+Select:
 
 - **Authentication:** Managed identity  
-- **Managed identity type:** System-assigned  
+- **Managed Identity:** `vuln-lab-expiration-cleanup (System-assigned)`  
 - **Subscription:** Your subscription  
 - **Resource Group:** `rg-vuln-web-lab`
 
+<img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
+
 ---
 
-### 5. **For Each Resource**
-Add **For Each** and loop over the resource list.
+## 4. Add **For Each**
 
-### 6. **Condition: Check for expireOn tag**
+Loop over the `value` array from the List Resources action.
+
+---
+
+## 5. Condition: Check `expireOn` tag
+
+Expression:
 
 ```
 @if(lessOrEquals(item()?['tags']?['expireOn'], utcNow()), true, false)
 ```
 
-### 7. **If TRUE → Delete Resource**
-Add:
+---
 
-**Azure Resource Manager → Delete resource**
+## 6. If TRUE → Delete Resource
 
-Use the resource ID from the loop item.
+Action:
 
-### 8. (Optional) **Send Notification**
+**Azure Resource Manager → Delete Resource**
+
+Use:
+
+```
+item()?['id']
+```
+
+---
+
+## 7. (Optional) Notifications
+
+You may add:
+
 - Email  
-- Teams  
+- Teams message  
 - Webhook  
 
 ---
 
 # Tagging Standard for All Deployments
 
-| Tag Key     | Purpose |
-|-------------|---------|
-| **expireOn** | UTC timestamp when cleanup should occur |
-| **owner** | Useful for multi-user labs |
-| **demo** | Identifies purpose (ex: juiceshop-aci) |
+| Tag Key       | Purpose |
+|---------------|---------|
+| **expireOn**  | Cleanup timestamp (UTC) |
+| **owner**     | Lab owner |
+| **demo**      | Application identifier |
 
-### Example Tag Format
+### Example Tags
 
 ```
 expireOn = 2025-11-25T23:59:00Z
@@ -175,32 +185,31 @@ demo     = juiceshop-lab
 
 # Deployment Options for Juice Shop
 
-You can deploy Juice Shop three different ways:
+Deploy Juice Shop using one of three methods:
 
-1. **Azure App Service (Recommended)**  
-2. **Azure VM + Docker**  
-3. **Azure Container Instances (ACI)**  
+1. **Azure App Service** (recommended)
+2. **Azure VM + Docker**
+3. **Azure Container Instances (ACI)**
+
+Each requires tagging + access control.
 
 ---
 
 # Option 1 — Azure App Service (Recommended)
 
-### Recommended Tag Example
+### Recommended Tags
 ```
 expireOn = 2025-11-25T23:59:00Z
 demo     = juice-appservice
 ```
 
-## Step 1.2 — Deploy the App Service
+## Deploy
 
-Navigate to **App Services → Create → Web App**
-
-### Basics
-- Publish: **Docker Container**  
-- OS: **Linux**  
-- Plan: **B1**  
-- Image: `bkimminich/juice-shop:latest`  
-- Region: Same as RG  
+1. Go to **App Services → Create Web App**
+2. Publish: **Docker Container**
+3. OS: **Linux**
+4. Plan: **B1**
+5. Image: `bkimminich/juice-shop:latest`
 
 Verify:
 
@@ -210,19 +219,21 @@ https://juiceshop-lab-<unique>.azurewebsites.net
 
 ---
 
-## Step 1.3 — Lock It Down
+## Lock It Down
 
-**Web App → Networking → Access Restrictions**
+Navigate to:
+
+**App → Networking → Access Restrictions**
 
 Add:
 
-1. **allow-my-ip**
-2. **allow-scanner-ips** (optional)
-3. **deny-all** (0.0.0.0/0)
+1. allow-my-ip  
+2. allow-scanner-ips (optional)  
+3. deny-all  
 
 ---
 
-## Step 1.4 — Add Expiration Tags
+## Add Expiration Tags
 
 ```
 expireOn = <UTC timestamp>
@@ -234,20 +245,21 @@ demo     = juice-appservice
 
 # Option 2 — Azure VM (Docker)
 
-### Recommended Tag Example
+### Recommended Tags
 ```
 expireOn = 2025-11-25T23:59:00Z
 demo     = juice-vm
 ```
 
-## Step 2.1 — Create the VM
-- Ubuntu 22.04  
+## Create VM
+
+- OS: Ubuntu 22.04  
 - Size: B2s  
-- NSG inbound rules: allow only your IP + deny-all  
+- NSG: Allow your IP only  
 
 ---
 
-## Step 2.2 — Install Docker
+## Install Docker
 
 ```
 sudo apt-get update
@@ -259,7 +271,7 @@ sudo usermod -aG docker $USER
 
 ---
 
-## Step 2.3 — Run Juice Shop
+## Run Juice Shop
 
 ```
 sudo docker run -d --name juiceshop -p 80:3000 bkimminich/juice-shop
@@ -273,7 +285,7 @@ http://<VM_PUBLIC_IP>/
 
 ---
 
-## Step 2.4 — Add Expiration Tags
+## Add Expiration Tags
 
 ```
 expireOn = <UTC timestamp>
@@ -285,16 +297,17 @@ demo     = juice-vm
 
 # Option 3 — Azure Container Instances (ACI)
 
-### Recommended Tag Example
+### Recommended Tags
 ```
 expireOn = 2025-11-25T23:59:00Z
 demo     = juice-aci
 ```
 
-## Step 3.1 — Create ACI
+## Create ACI
 
-- Image: `bkimminich/juice-shop`  
-- 1 vCPU / 2 GB  
+- Image: `bkimminich/juice-shop`
+- CPU: 1 vCPU  
+- RAM: 2 GB  
 - Port: 3000  
 
 URL:
@@ -305,13 +318,16 @@ https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
 
 ---
 
-## Step 3.2 — Lock It Down
+## Lock Down
 
-Use ACI Firewall or VNet + NSG.
+Use:
+
+- ACI firewall  
+- or VNet + NSG
 
 ---
 
-## Step 3.3 — Add Expiration Tags
+## Add Expiration Tags
 
 ```
 expireOn = <UTC timestamp>
@@ -323,11 +339,11 @@ demo     = juice-aci
 
 # Cleanup Happens Automatically
 
-When the expiration timestamp is reached:
+Once `expireOn` is reached:
 
 - Logic App detects expired resources  
 - Deletes them  
-- (Optional) Sends notification  
+- Optional notifications  
 
-Your environment stays clean and cost-effective.
+Your environment stays secure, temporary, and cost-efficient.
 
