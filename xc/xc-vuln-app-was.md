@@ -1,4 +1,4 @@
----
+--- 
 layout: default
 title: Configuring a Vulnerable App in Azure with XC - WAS
 ---
@@ -14,7 +14,7 @@ This prevents:
 - Accidental exposure of vulnerable apps  
 - Lingering cloud resources that continue to incur costs  
 
-The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled. The Logic App costs ~$0.001 – $0.02 per month
+The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled. The Logic App costs ~$0.001 – $0.02 per month.
 
 ---
 
@@ -34,9 +34,13 @@ Before deploying any vulnerable applications, you must configure:
 3. Region: your preferred region  
 4. Create
 
+---
+
 ## Step A.1 — Configure the Logic App (Expiration-Based Cleanup)
 
 This Logic App periodically checks resources for an `expireOn` tag and automatically deletes them after the expiration date/time.
+
+---
 
 ## Step A.2 — Create the Logic App
 
@@ -63,7 +67,7 @@ Configure the trigger:
 - **Frequency:** Day  
 - **Interval:** 1  
 
-![Logic App Trigger](/xc-images/logicapp1.png)
+<img src="/xc-images/logicapp1.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
@@ -73,7 +77,7 @@ Add the action:
 
 **Azure Resource Manager → List resources (Resource Group)**
 
-![List Resources](/xc-images/listresource1.png)
+<img src="/xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
 
 This retrieves all resources inside **rg-vuln-web-lab** so the Logic App can inspect each resource’s tags.
 
@@ -87,7 +91,7 @@ When prompted to create a connection, select:
 
 This ensures the Logic App uses its own identity to access and delete resources in the scoped Resource Group.
 
-![Add Connection](/xc-images/connect.png)
+<img src="/xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
 #### Other Authentication Options (When to Use / Avoid)
 
@@ -100,8 +104,6 @@ This ensures the Logic App uses its own identity to access and delete resources 
 ---
 
 ### 4. Configure Managed Identity (Recommended)
-
-Follow this flow:
 
 #### **A. Enable the Logic App’s Managed Identity**
 
@@ -126,20 +128,14 @@ Back in the “Create connection” dialog:
 - **Authentication:** Managed identity  
 - **Managed identity type:** System-assigned  
 - **Subscription:** Your subscription  
-- **Resource Group:** `rg-vuln-web-lab` (for the “List resources by resource group” action)
+- **Resource Group:** `rg-vuln-web-lab`
 
 ---
-
-The Logic App now has permission to enumerate and delete resources based on their expiration tags within the specified Resource Group.
-
 
 ### 5. **For Each Resource**
 Add **For Each** and loop over the resource list.
 
-Inside the loop:
-
 ### 6. **Condition: Check for expireOn tag**
-Use an expression such as:
 
 ```
 @if(lessOrEquals(item()?['tags']?['expireOn'], utcNow()), true, false)
@@ -152,18 +148,14 @@ Add:
 
 Use the resource ID from the loop item.
 
-### 6. (Optional) **Send Notification**
-Actions you can attach:
-
-- Send email  
-- Teams notification  
-- Webhook to monitoring system  
+### 8. (Optional) **Send Notification**
+- Email  
+- Teams  
+- Webhook  
 
 ---
 
 # Tagging Standard for All Deployments
-
-Every vulnerable environment must include:
 
 | Tag Key     | Purpose |
 |-------------|---------|
@@ -189,8 +181,6 @@ You can deploy Juice Shop three different ways:
 2. **Azure VM + Docker**  
 3. **Azure Container Instances (ACI)**  
 
-Each option below includes where to set your expiration tags.
-
 ---
 
 # Option 1 — Azure App Service (Recommended)
@@ -200,8 +190,6 @@ Each option below includes where to set your expiration tags.
 expireOn = 2025-11-25T23:59:00Z
 demo     = juice-appservice
 ```
-
----
 
 ## Step 1.2 — Deploy the App Service
 
@@ -214,7 +202,7 @@ Navigate to **App Services → Create → Web App**
 - Image: `bkimminich/juice-shop:latest`  
 - Region: Same as RG  
 
-Deploy and verify:
+Verify:
 
 ```
 https://juiceshop-lab-<unique>.azurewebsites.net
@@ -224,25 +212,17 @@ https://juiceshop-lab-<unique>.azurewebsites.net
 
 ## Step 1.3 — Lock It Down
 
-Go to:
-
 **Web App → Networking → Access Restrictions**
 
 Add:
 
 1. **allow-my-ip**
-2. **allow-scanner-ips** (if applicable)
+2. **allow-scanner-ips** (optional)
 3. **deny-all** (0.0.0.0/0)
 
 ---
 
 ## Step 1.4 — Add Expiration Tags
-
-Go to:
-
-**Web App → Settings → Configuration → Tags**
-
-Add:
 
 ```
 expireOn = <UTC timestamp>
@@ -252,7 +232,7 @@ demo     = juice-appservice
 
 ---
 
-# Option 2 — Deploy on Azure VM (Docker)
+# Option 2 — Azure VM (Docker)
 
 ### Recommended Tag Example
 ```
@@ -263,10 +243,7 @@ demo     = juice-vm
 ## Step 2.1 — Create the VM
 - Ubuntu 22.04  
 - Size: B2s  
-- NSG inbound rules: allow only  
-  - your IP  
-  - scanner IPs  
-  - deny-all for rest  
+- NSG inbound rules: allow only your IP + deny-all  
 
 ---
 
@@ -296,20 +273,7 @@ http://<VM_PUBLIC_IP>/
 
 ---
 
-## Step 2.4 — Lock It Down with NSG
-- allow-my-ip  
-- allow-scanner-ips  
-- deny-all  
-
----
-
-## Step 2.5 — Add Expiration Tags
-
-Go to:
-
-**VM → Tags**
-
-Add:
+## Step 2.4 — Add Expiration Tags
 
 ```
 expireOn = <UTC timestamp>
@@ -330,11 +294,10 @@ demo     = juice-aci
 ## Step 3.1 — Create ACI
 
 - Image: `bkimminich/juice-shop`  
-- CPU/RAM: 1 vCPU / 2 GB  
-- Networking: Public  
+- 1 vCPU / 2 GB  
 - Port: 3000  
 
-The URL will look like:
+URL:
 
 ```
 https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
@@ -344,41 +307,17 @@ https://juiceshop-aci-<unique>.<region>.azurecontainer.io:3000
 
 ## Step 3.2 — Lock It Down
 
-Use ACI Firewall or attach to a VNet with NSG:
-
-- allow-my-ip  
-- allow-scanner-ips  
-- deny-all  
+Use ACI Firewall or VNet + NSG.
 
 ---
 
 ## Step 3.3 — Add Expiration Tags
-
-Go to:
-
-**Container Instance → Tags**
-
-Add:
 
 ```
 expireOn = <UTC timestamp>
 owner    = mike
 demo     = juice-aci
 ```
-
----
-
-# Step 4 — (Optional) Integrate With Scanners / WAF
-
-Once your apps are deployed and locked down, you may route them through:
-
-- F5 XC WAAP  
-- BIG-IP WAF  
-- NGINX App Protect  
-- Burp/ZAP  
-- Custom scanners  
-
-But this is **separate** from the Logic App cleanup process.
 
 ---
 
