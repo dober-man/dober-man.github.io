@@ -57,6 +57,11 @@ Before deploying any vulnerable applications, configure:
 3. Under **System Assigned**, toggle **On**  
 4. Click **Save**
 
+
+<img src="./xc-images/identity.png" style="max-width:600px; width:100%; height:auto;">
+
+
+
 Now the Logic App has:
 
 - A system-assigned Managed Identity  
