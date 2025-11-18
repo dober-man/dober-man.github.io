@@ -67,7 +67,7 @@ Configure the trigger:
 - **Frequency:** Day  
 - **Interval:** 1  
 
-<img src="/xc-images/logicapp1.png" style="max-width:600px; width:100%; height:auto;">
+<img src="./xc-images/logicapp1.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
@@ -77,7 +77,7 @@ Add the action:
 
 **Azure Resource Manager → List resources (Resource Group)**
 
-<img src="/xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
+<img src="./xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
 
 This retrieves all resources inside **rg-vuln-web-lab** so the Logic App can inspect each resource’s tags.
 
@@ -91,7 +91,7 @@ When prompted to create a connection, select:
 
 This ensures the Logic App uses its own identity to access and delete resources in the scoped Resource Group.
 
-<img src="/xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
+<img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
 #### Other Authentication Options (When to Use / Avoid)
 
