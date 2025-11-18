@@ -159,12 +159,12 @@ Search for **Condition***.
 
 <img src="./xc-images/condition.png" style="max-width:600px; width:100%; height:auto;">
 
+In the Left side expression enter: **item()?['tags']?['expireOn']**
+In the Center choose equal to or less than: **≤**
+In the Right side expression enter: **utcNow()**
+Close the panel. 
 
-Expression:
-
-```
-@if(lessOrEquals(item()?['tags']?['expireOn'], utcNow()), true, false)
-```
+<img src="./xc-images/condition2.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
