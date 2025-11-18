@@ -52,38 +52,100 @@ This Logic App periodically checks resources for an `expireOn` tag and automatic
 
 ## Step A.3 — Build the Logic App Workflow
 
-Open the **Logic App Designer** and add:
+Open the **Logic App Designer** and follow the steps below.
 
-### 1. **Trigger: Schedule** -> **Recurrence**
+---
 
-- Frequency: `1`  
-- Interval: `Day` (or Hour for short-lived demos)
+### 1. Trigger: **Schedule → Recurrence**
+
+Configure the trigger:
+
+- **Frequency:** Day  
+- **Interval:** 1  
+
+![Logic App Trigger](/xc-images/logicapp1.png)
+
+---
+
+### 2. Add Action: **List Resources (By Resource Group)**
+
+Add the action:
+
+**Azure Resource Manager → List resources (Resource Group)**
+
+![List Resources](/xc-images/listresource1.png)
+
+This retrieves all resources inside **rg-vuln-web-lab** so the Logic App can inspect each resource’s tags.
+
+---
+
+### 3. Add Connection (Authentication)
+
+When prompted to create a connection, select:
+
+- **Authentication:** Managed identity (recommended)
+
+This ensures the Logic App uses its own identity to access and delete resources in the scoped Resource Group.
+
+![Add Connection](/xc-images/connect.png)
+
+#### Other Authentication Options (When to Use / Avoid)
+
+- **OAuth:**  
+  Uses *your* user account. Good for quick testing but not ideal for long-term or least-privilege automation.
+
+- **Service Principal:**  
+  Useful for large enterprise deployments where app registrations and secrets are standardized. Overkill for a small lab.
+
+---
+
+### 4. Configure Managed Identity (Recommended)
+
+Follow this flow:
+
+#### **A. Enable the Logic App’s Managed Identity**
+
+1. Open your Logic App  
+2. Go to **Identity** (left menu)  
+3. Under **System assigned**, toggle **On**  
+4. Click **Save**
+
+#### **B. Grant RBAC Permissions on the Resource Group**
+
+1. Go to **Resource groups → rg-vuln-web-lab**  
+2. Open **Access control (IAM)**  
+3. Select **Add role assignment**  
+4. Choose **Contributor** (required for delete operations)  
+5. Assign access to: **Managed Identity**  
+6. Select your Logic App → Save
+
+#### **C. Complete the Connection Setup**
+
+Back in the “Create connection” dialog:
+
+- **Authentication:** Managed identity  
+- **Managed identity type:** System-assigned  
+- **Subscription:** Your subscription  
+- **Resource Group:** `rg-vuln-web-lab` (for the “List resources by resource group” action)
+
+---
+
+The Logic App now has permission to enumerate and delete resources based on their expiration tags within the specified Resource Group.
 
 
-    ![Logic App Trigger](/xc-images/logicapp.png)
-
-
-### 2. **List Resources**
-Add action:  
-**Azure Resource Manager → List resources (Subscription)**
-
-   ![List Resources](/xc-images/listresource.png)
-
-This fetches all Azure resources so the Logic App can inspect their tags.
-
-### 3. **For Each Resource**
+### 5. **For Each Resource**
 Add **For Each** and loop over the resource list.
 
 Inside the loop:
 
-### 4. **Condition: Check for expireOn tag**
+### 6. **Condition: Check for expireOn tag**
 Use an expression such as:
 
 ```
 @if(lessOrEquals(item()?['tags']?['expireOn'], utcNow()), true, false)
 ```
 
-### 5. **If TRUE → Delete Resource**
+### 7. **If TRUE → Delete Resource**
 Add:
 
 **Azure Resource Manager → Delete resource**
