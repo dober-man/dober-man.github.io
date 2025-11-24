@@ -15,7 +15,7 @@ This prevents:
 - Lingering cloud resources that continue to incur costs  
 
 The Logic App will **delete resources when their expiration tag is reached**, ensuring that your lab environments remain temporary and controlled.  
-**Cost:** ~$0.001 – $0.02 per month.
+**Logic App Cost:** ~$0.001 – $0.02 per month.
 
 ---
 
@@ -170,15 +170,33 @@ Close the panel.
 
 ## 6. If TRUE → Delete Resource
 
-Action:
+Click the Blue Plus inside of the **True** actions box and **Add an Action**.
+Search for **Delete Resource**.
 
+<img src="./xc-images/dr-true.png" style="max-width:600px; width:100%; height:auto;">
+
+Action:
 **Azure Resource Manager → Delete Resource**
 
-Use:
+- **Subscription:** Your Subscription 
+- **Resource Group:** rg-vuln-web-lab  
+- **Resource Provider:** Enter Custom Value -> Expression -> item()?['type']
+- **Short Resource ID:** Expression -> item()?['name']
+- **Client API Version:** 2021-04-01
+
+<img src="./xc-images/resource.png" style="max-width:600px; width:100%; height:auto;">
+
+Click **Save**
+
+Here is the logic of what we what just did: 
 
 ```
-item()?['id']
+Recurrence → List resources by RG → For Each(resource):
+    Condition: expireOn <= utcNow()
+        True → Delete Resource
+        False → (no action)
 ```
+
 
 ---
 
