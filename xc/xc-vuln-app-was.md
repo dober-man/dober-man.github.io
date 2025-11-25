@@ -77,7 +77,7 @@ The Logic App needs **Contributor** rights to delete expired resources.
 2. Left menu → **Access Control (IAM)**  
 3. Click **Add → Add role assignment**  
 4. Select:  
-   - **Role:** Contributor  
+   - **Role:** Privileged administrator roles -> Contributor  
    - **Assign access to:** Managed Identity  
 
 <img src="./xc-images/role.png" style="max-width:600px; width:100%; height:auto;">
@@ -90,7 +90,7 @@ The Logic App needs **Contributor** rights to delete expired resources.
 
 <img src="./xc-images/object.png" style="max-width:600px; width:100%; height:auto;">
 
-6. Click **Save**
+6. Click **Review + assign**
 
 The Logic App now has permissions.
 
@@ -108,8 +108,11 @@ Configure:
 
 - **Frequency:** Day  
 - **Interval:** 1  
+- **At these hours:** 12  
 
 <img src="./xc-images/logicapp1.png" style="max-width:600px; width:100%; height:auto;">
+
+Close the pane and clieck **Save**. 
 
 ---
 
@@ -124,11 +127,6 @@ Search for:
 
 <img src="./xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
 
-### Configure:
-
-- **Subscription:** Your subscription  
-- **Resource Group:** `rg-vuln-web-lab`
-
 When you click into the connector for the first time, Azure will prompt you to create a connection.
 
 ---
@@ -140,13 +138,19 @@ When the **Create connection** panel appears:
 Choose:
 
 - **Authentication:** Managed Identity  
-- **Managed Identity:** `vuln-lab-expiration-cleanup (System-assigned)`  
+- **Connection name:** default value
+- **Managed Identity:** `System-assigned managed identity`  
+
+**Create New**
+
+Choose your:
+
 - **Subscription:** Your subscription  
 - **Resource Group:** `rg-vuln-web-lab`
 
 <img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
-Click **Create** and then **Save**.
+Close the palnel and click **Save**.
 
 This establishes the ARM connection used for all future ARM operations.
 
