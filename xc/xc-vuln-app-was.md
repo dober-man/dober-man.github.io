@@ -197,18 +197,32 @@ Recurrence → List resources by RG → For Each(resource):
         False → (no action)
 ```
 
+## 7. Quick Logic App Functionaility Verification 
+
+Public IP Address (Ultra-fast test)
+
+### Steps:
+1. Azure Portal → **Create → Public IP Address**
+
+**Resource Group:** rg-vuln-web-lab 
+**Name:** mytestip1
+**DNS Name Label:** mytestip1
+
+2. Add tags:
+
+expireOn = 2024-01-01T00:00:00Z
+owner = test
+demo = test-delete
+
+3. Run the Logic App  
+4. The Public IP should be removed immediately
 
 ---
 
-## 7. (Optional) Notifications
-
-You may add:
-
-- Email  
-- Teams message  
-- Webhook  
+These are the best resources for safely testing your Logic App cleanup workflow before using it on larger deployments.
 
 ---
+
 
 # Tagging Standard for All Deployments
 
