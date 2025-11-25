@@ -136,42 +136,65 @@ Select:
 
 <img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
+
 ---
 
 <img src="./xc-images/action.png" style="max-width:600px; width:100%; height:auto;">
 
-Click **Save** 
+Click **Create** and then **Save**.
 
 ## 4. Add Action **For Each**
 
-Loop over the `value` array from the List Resources action.
-Enter: **@body('List_resources_by_resource_group')?['value']** in the "Select an output from previous steps" field. 
+Loop over the `value` array from the **List resources by resource group** action.
 
+1. Click the blue **+** under **List resources by resource group**  
+2. Choose **Add an action → Built-in → Control → For each**  
+3. In **“Select an output from previous steps”**, click **Dynamic content** and pick **`value`** from the *List resources by resource group* output  
+   - Logic Apps will internally set this to:  
+     `@body('List_resources_by_resource_group')?['value']`
 <img src="./xc-images/value.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
-## 5. Condition: Check `expireOn` tag
+## 5. Condition: Check `expireOn` tag (null-safe)
 
-Click the Blue Plus inside of the **For each** actions box and **Add an Action**. 
+1. Click the blue **+** → **Add an action**  
+2. Search for **Condition** and add it  
 
-Search for **Condition***.
 
 <img src="./xc-images/condition.png" style="max-width:600px; width:100%; height:auto;">
 
-In the Left side expression enter: **item()?['tags']?['expireOn']**
-In the Center choose equal to or less than: **≤**
-In the Right side expression enter: **utcNow()**
-Close the panel. 
+Now switch the condition to an **expression** that safely handles resources with no tags:
+
+1. In the condition pane, look for **“Edit in advanced mode”** (or the Expression text box, depending on the UI)  
+2. Replace any existing content with this expression:
+
+   ```text
+   @lessOrEquals(
+     coalesce(item()?['tags']?['expireOn'], '9999-12-31T23:59:59Z'),
+     utcNow()
+   )
+   ```
 
 <img src="./xc-images/condition2.png" style="max-width:600px; width:100%; height:auto;">
+
+3. Click OK / Update and then Save
+
+This logic means:
+
+If expireOn is missing, we treat it as 9999-12-31T23:59:59Z → the comparison is false → resource is not deleted
+
+If expireOn exists and is in the past, the condition is true → resource will be deleted
 
 ---
 
 ## 6. If TRUE → Delete Resource
 
-Click the Blue Plus inside of the **True** actions box and **Add an Action**.
-Search for **Delete Resource**.
+Inside the green **True** branch of the Condition:
+
+1. Click the blue **+** → **Add an action**  
+2. Search for **Delete a resource**  
+3. Select: **Azure Resource Manager → Delete a resource**
 
 <img src="./xc-images/dr-true.png" style="max-width:600px; width:100%; height:auto;">
 
@@ -188,16 +211,20 @@ Action:
 
 Click **Save**
 
-Here is the logic of what we what just did: 
+This tells Azure to delete the specific resource (by type and name) inside the `rg-vuln-web-lab` Resource Group whenever the condition evaluates to **true**.
 
-```
-Recurrence → List resources by RG → For Each(resource):
-    Condition: expireOn <= utcNow()
-        True → Delete Resource
-        False → (no action)
-```
+## 7. False Branch (Do Nothing)
 
-## 7. Quick Logic App Functionaility Verification 
+Leave the **False** branch of the Condition empty.
+
+- If a resource has no `expireOn` tag, or  
+- Its `expireOn` value is in the **future**,  
+
+then the condition expression will evaluate to **false**, and the Logic App will **skip** that resource without taking any action.
+
+---
+
+## 8. Quick Logic App Functionaility Verification 
 
 Public IP Address (Ultra-fast test)
 
