@@ -78,19 +78,23 @@ The Logic App needs **Contributor** rights to delete expired resources.
 3. Click **Add → Add role assignment**  
 4. Select:  
    - **Role:** Privileged administrator roles -> Contributor  
-   - **Assign access to:** Managed Identity  
+
 
 <img src="./xc-images/role.png" style="max-width:600px; width:100%; height:auto;">
 
-<img src="./xc-images/mi.png" style="max-width:600px; width:100%; height:auto;">
+5. **Assign access to:** Managed Identity and click **"+ Select members"**
 
-5. Select member:  
+6. Select member:  
    - **Type:** Logic App  
    - **Name:** `vuln-lab-expiration-cleanup`  
 
+<img src="./xc-images/mi.png" style="max-width:600px; width:100%; height:auto;">
+
+The role assignment should look loike this now: 
+
 <img src="./xc-images/object.png" style="max-width:600px; width:100%; height:auto;">
 
-6. Click **Review + assign**
+7. Click **Review + assign** and then **Review + assign**
 
 The Logic App now has permissions.
 
@@ -98,10 +102,10 @@ The Logic App now has permissions.
 
 # Step A.4 — Build the Logic App Workflow
 
-Open **Logic App Designer** and follow these steps.
+Open the Logic App and then **Logic App Designer** by clicking **"Edit"** and follow these steps.
 
 ---
-
+ 
 ## 1. Trigger: **Schedule → Recurrence**
 
 Configure:
