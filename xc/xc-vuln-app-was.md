@@ -233,14 +233,14 @@ Action:
 - **Subscription:** Your Subscription 
 - **Resource Group:** rg-vuln-web-lab  
 - **Resource Provider:** Enter Custom Value -> Expression -> 
+
 ```
 item()?['type']
-
 ```
 - **Short Resource ID:** Expression -> 
+
 ```
 item()?['name']
-
 ```
 - **Client API Version:** 2021-04-01
 
