@@ -207,7 +207,7 @@ true
 ```
 <img src="./xc-images/condition3.png" style="max-width:600px; width:100%; height:auto;">
 
-3. Cllose the pane and click **Save**. 
+3. Close the pane and click **Save**. 
 
 This logic means:
 
@@ -232,8 +232,12 @@ Action:
 
 - **Subscription:** Your Subscription 
 - **Resource Group:** rg-vuln-web-lab  
-- **Resource Provider:** Enter Custom Value -> Expression -> item()?['type']
-- **Short Resource ID:** Expression -> item()?['name']
+- **Resource Provider:** Enter Custom Value -> Expression -> 
+```item()?['type']
+```
+- **Short Resource ID:** Expression -> 
+```item()?['name']
+```
 - **Client API Version:** 2021-04-01
 
 <img src="./xc-images/resource.png" style="max-width:600px; width:100%; height:auto;">
