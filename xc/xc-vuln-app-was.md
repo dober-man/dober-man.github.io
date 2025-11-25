@@ -115,11 +115,16 @@ Configure:
 
 ## 2. Add Action: **List Resources (By Resource Group)**
 
-Action:
+1. Click the blue **+** under "Recurrance" → **Add an action**  
 
-**Azure Resource Manager → List resources (Resource Group)**
+2. Search for **"list resources"** and choose **List resources by resource group**
 
 <img src="./xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
+
+3. Select 
+
+- **Subscription:** Your subscription  
+- **Resource Group:** `rg-vuln-web-lab`
 
 This retrieves all resources in `rg-vuln-web-lab`.
 
