@@ -90,7 +90,7 @@ The Logic App needs **Contributor** rights to delete expired resources.
 
 <img src="./xc-images/mi1.png" style="max-width:600px; width:100%; height:auto;">
 
-The role assignment should look loike this now: 
+The role assignment should look look this now: 
 
 <img src="./xc-images/object1.png" style="max-width:600px; width:100%; height:auto;">
 
@@ -154,7 +154,7 @@ Choose your:
 
 <img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
-Close the palnel and click **Save**.
+Close the panel and click **Save**.
 
 This establishes the ARM connection used for all future ARM operations.
 
@@ -170,11 +170,13 @@ Loop over the `value` array from the **List resources by resource group** action
      `@body('List_resources_by_resource_group')?['value']`
 <img src="./xc-images/value.png" style="max-width:600px; width:100%; height:auto;">
 
+Close the panel and click **Save**.
+
 ---
 
 ## 5. Condition: Check `expireOn` tag (null-safe)
 
-1. Click the blue **+** → **Add an action**  
+1. From within the **For each** pane, click the blue **+** → **Add an action**  
 2. Search for **Condition** and add it  
 
 
@@ -182,19 +184,30 @@ Loop over the `value` array from the **List resources by resource group** action
 
 Now switch the condition to an **expression** that safely handles resources with no tags:
 
-1. In the condition pane, look for **“Edit in advanced mode”** (or the Expression text box, depending on the UI)  
-2. Replace any existing content with this expression:
-
-   ```text
-   @lessOrEquals(
-     coalesce(item()?['tags']?['expireOn'], '9999-12-31T23:59:59Z'),
-     utcNow()
-   )
-   ```
+In the first **“Choose a value”** box, click the blue fx icon.
 
 <img src="./xc-images/condition2.png" style="max-width:600px; width:100%; height:auto;">
 
-3. Click OK / Update and then Save
+In the expression editor that pops up, paste: 
+
+```
+lessOrEquals(
+  coalesce(item()?['tags']?['expireOn'], '9999-12-31T23:59:59Z'),
+  utcNow()
+)
+```
+In the middle box set it to **=**.
+
+In the right “Choose a value” box, click the blue fx icon again.
+
+In the expression editor, just enter:
+
+```
+true
+```
+<img src="./xc-images/condition3.png" style="max-width:600px; width:100%; height:auto;">
+
+3. Cllose the pane and click **Save**. 
 
 This logic means:
 
