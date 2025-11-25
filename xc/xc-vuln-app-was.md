@@ -246,7 +246,7 @@ item()?['name']
 
 <img src="./xc-images/resource.png" style="max-width:600px; width:100%; height:auto;">
 
-Click **Save**
+Close the pane and click **Save**
 
 This tells Azure to delete the specific resource (by type and name) inside the `rg-vuln-web-lab` Resource Group whenever the condition evaluates to **true**.
 
@@ -268,15 +268,17 @@ Public IP Address (Ultra-fast test)
 ### Steps:
 1. Azure Portal → **Create → Public IP Address**
 
-**Resource Group:** rg-vuln-web-lab 
-**Name:** mytestip1
-**DNS Name Label:** mytestip1
+- **Resource Group:** rg-vuln-web-lab 
+- **Name:** mytestip1
+- **DNS Name Label:** mytestip1
 
 2. Add tags:
 
-expireOn = 2024-01-01T00:00:00Z
-owner = test
-demo = test-delete
+- expireOn = 2024-01-01T00:00:00Z
+- owner = test
+- demo = test-delete
+
+Review and Create + Create
 
 3. Run the Logic App  
 4. The Public IP should be removed immediately
