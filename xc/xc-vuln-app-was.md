@@ -113,40 +113,43 @@ Configure:
 
 ---
 
-## 2. Add Action: **List Resources (By Resource Group)**
+## 2. Add Action: **List resources (Resource Group)**
 
-1. Click the blue **+** under "Recurrance" → **Add an action**  
+Under the **Recurrence** trigger, click the blue **+** → **Add an action**.
 
-2. Search for **"list resources"** and choose **List resources by resource group**
+Search for:
+
+**List resources (Resource Group)**  
+(from the Azure Resource Manager connector)
 
 <img src="./xc-images/listresource1.png" style="max-width:600px; width:100%; height:auto;">
 
-3. Select 
+### Configure:
 
 - **Subscription:** Your subscription  
 - **Resource Group:** `rg-vuln-web-lab`
 
-This retrieves all resources in `rg-vuln-web-lab`.
+When you click into the connector for the first time, Azure will prompt you to create a connection.
 
 ---
 
-## 3. Create ARM Connection Using Managed Identity
+## 3. Create the ARM Connection (Managed Identity)
 
-Select:
+When the **Create connection** panel appears:
 
-- **Authentication:** Managed identity  
+Choose:
+
+- **Authentication:** Managed Identity  
 - **Managed Identity:** `vuln-lab-expiration-cleanup (System-assigned)`  
 - **Subscription:** Your subscription  
 - **Resource Group:** `rg-vuln-web-lab`
 
 <img src="./xc-images/connect.png" style="max-width:600px; width:100%; height:auto;">
 
-
----
-
-<img src="./xc-images/action.png" style="max-width:600px; width:100%; height:auto;">
-
 Click **Create** and then **Save**.
+
+This establishes the ARM connection used for all future ARM operations.
+
 
 ## 4. Add Action **For Each**
 
