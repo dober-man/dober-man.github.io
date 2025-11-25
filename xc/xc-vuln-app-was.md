@@ -278,14 +278,16 @@ Public IP Address (Ultra-fast test)
 - owner = test
 - demo = test-delete
 
-Review and Create + Create
+Review and create and then **Create**.
 
 3. Run the Logic App  
 4. The Public IP should be removed immediately
 
----
+<img src="./xc-images/cleanup.png" style="max-width:600px; width:100%; height:auto;">
 
-These are the best resources for safely testing your Logic App cleanup workflow before using it on larger deployments.
+To see the job run details click on **Run details** in the upper left. 
+
+<img src="./xc-images/rundeets.png" style="max-width:600px; width:100%; height:auto;">
 
 ---
 
