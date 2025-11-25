@@ -88,11 +88,11 @@ The Logic App needs **Contributor** rights to delete expired resources.
    - **Type:** Logic App  
    - **Name:** `vuln-lab-expiration-cleanup`  
 
-<img src="./xc-images/mi.png" style="max-width:600px; width:100%; height:auto;">
+<img src="./xc-images/mi1.png" style="max-width:600px; width:100%; height:auto;">
 
 The role assignment should look loike this now: 
 
-<img src="./xc-images/object.png" style="max-width:600px; width:100%; height:auto;">
+<img src="./xc-images/object1.png" style="max-width:600px; width:100%; height:auto;">
 
 7. Click **Review + assign** and then **Review + assign**
 
@@ -116,7 +116,7 @@ Configure:
 
 <img src="./xc-images/logicapp1.png" style="max-width:600px; width:100%; height:auto;">
 
-Close the pane and clieck **Save**. 
+Close the pane and click **Save**. 
 
 ---
 
